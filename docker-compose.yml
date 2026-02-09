@@ -1,0 +1,52 @@
+services:
+  # BANCO DE DADOS
+  mongo:
+    image: mongo:6.0
+    container_name: petadopt_mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - app_network
+
+  # BACKEND
+  api:
+    build: ./back
+    container_name: petadopt_api
+    restart: always
+    ports:
+      - "3002:3002"
+    env_file:
+      - back/.env
+    volumes:
+      - ./back/uploads:/app/uploads
+    depends_on:
+      - mongo
+    networks:
+      - app_network
+
+  # FRONTEND
+  frontend:
+    build:
+      context: ./front
+      args:
+        - REACT_APP_ASSETS_URL=http://localhost:3002
+        - REACT_APP_API_URL=http://localhost:3002/api/v1
+    container_name: petadopt_front
+    restart: always
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
+    networks:
+      - app_network
+
+volumes:
+  mongo_data:
+
+networks:
+  app_network:
+    driver: bridge

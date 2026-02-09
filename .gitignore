@@ -1,0 +1,11 @@
+# Ignorar arquivos de ambiente com segredos
+.env
+backend/.env
+backend/uploads
+frontend/.env
+
+# Ignorar pastas de node_modules e builds
+node_modules
+dist
+build
+.next

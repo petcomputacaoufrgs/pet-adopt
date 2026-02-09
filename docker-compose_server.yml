@@ -1,0 +1,78 @@
+services:
+  # BANCO DE DADOS
+  mongo:
+    image: mongo:6.0
+    container_name: petadopt_mongo
+    restart: always
+    environment:
+      # Puxa do .env da raiz
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - app_network
+
+  # BACKEND
+  api:
+    build: ./back
+    container_name: petadopt_api
+    restart: always
+    env_file:
+      - back/.env
+    volumes:
+      - ./back/uploads:/app/uploads
+    depends_on:
+      - mongo
+    networks:
+      - app_network
+
+  # FRONTEND
+  frontend:
+    build:
+      context: ./front
+      args:
+        - REACT_APP_ASSETS_URL=
+        - REACT_APP_API_URL=/api/v1
+    container_name: petadopt_front
+    restart: always
+    depends_on:
+      - api
+    networks:
+      - app_network
+
+  # NGINX
+  # O Nginx é o ponto de entrada, então ele depende do frontend e do backend para garantir que eles estejam prontos antes de iniciar
+  # Ele roteia as requisições para o frontend (React) e para a API (Backend), além de servir os arquivos estáticos (uploads) do backend
+  # O Nginx é configurado para ouvir na porta 80, e o React e a API são expostos internamente, sem necessidade de mapear portas externas, ou seja,
+  # o Nginx é o único serviço que estamos expondo para o mundo externo. Ninguém acessa o React ou a API diretamente, tudo passa pelo Nginx, 
+  #o que é mais seguro e facilita a configuração do Cloudflare Tunnel
+  nginx:
+    image: nginx:alpine
+    container_name: petadopt_nginx
+    restart: always
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - frontend
+      - api
+    networks:
+      - app_network
+
+  # TÚNEL CLOUDFLARE
+  tunnel:
+    image: cloudflare/cloudflared:latest
+    container_name: cloudflare_tunnel
+    restart: always
+    command: tunnel run
+    environment:
+      - TUNNEL_TOKEN=${TUNNEL_TOKEN}
+    networks:
+      - app_network
+
+volumes:
+  mongo_data:
+
+networks:
+  app_network:
+    driver: bridge
