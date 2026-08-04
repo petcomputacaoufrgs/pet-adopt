@@ -1,72 +1,318 @@
-# PetAdopt - Plataforma de Adoção (Docker)
+# PetAdopt - Plataforma de Adoção
 
-Este repositório contém o código fonte unificado (Backend + Frontend) e a infraestrutura necessária para rodar a aplicação PetAdopt utilizando containers Docker.
+O **PetAdopt** é uma plataforma para adoção de animais composta por um frontend em **React + Vite** e um backend em **NestJS**, ambos escritos em **TypeScript** e executados utilizando **Docker**.
 
-O projeto possui configurações distintas para Desenvolvimento Local e Produção (Servidor).
+Este repositório contém toda a aplicação, incluindo o frontend, backend e a infraestrutura necessária para desenvolvimento e produção.
 
-## Pré-requisitos
+---
 
-Para executar este projeto, o seu ambiente deve ter instalado:
+# Tecnologias
 
-[Git](https://git-scm.com/install/)
+## Frontend
 
-[Docker](https://www.docker.com/products/docker-desktop/)
+* React
+* TypeScript
+* Vite
+* React Router
+* Styled Components
+* Axios
 
-Docker Compose (Geralmente incluído no Docker Desktop)
+## Backend
 
-## Instalação e Configuração
+* NestJS
+* TypeScript
+* JWT
+* MongoDB
 
-1. Clonar o Repositório
-2. Configuração de Variáveis de Ambiente (.env)
+## Infraestrutura
 
-**Importante:** Por segurança, as chaves de API, senhas de banco de dados e tokens não estão incluídos no repositório.
+* Docker
+* Docker Compose
+* Nginx (Produção)
+* Cloudflare Tunnel (Produção)
 
-## Como Rodar
+---
 
-Existem dois modos de execução, definidos por arquivos docker-compose diferentes.
+# Estrutura do Projeto
 
-### Opção A: Rodar Localmente
+```text
+pet-adopt/
 
-Use este modo para programar. Ele expõe as portas 3000 e 3002 diretamente na sua máquina e não utiliza o túnel Cloudflare.
+├── back/                     # Backend (NestJS)
+│   ├── src/
+│   ├── uploads/
+│   └── .env
+│
+├── front/                    # Frontend (React + Vite)
+│   └── src/
+│
+├── nginx/
+│
+├── docker-compose.yml         # Produção
+├── docker-compose-local.yml   # Desenvolvimento
+└── README.md
+```
 
-`docker-compose -f docker-compose.yml up -d --build`
+---
 
-Acesso:
+# Pré-requisitos
 
-Frontend: http://localhost:3000
+Antes de iniciar, instale:
 
-API: http://localhost:3002
+* Git
+* Docker Desktop (já inclui Docker Compose)
 
-Swagger Docs: http://localhost:3002/api
+---
 
-### Opção B: Rodar no Servidor (Produção)
+# Configuração
 
-Use este modo para o deploy. Ele utiliza Nginx e Cloudflare Tunnel para expor a aplicação de forma segura via HTTPS, sem abrir portas locais.
+## 1. Clonar o repositório
 
-`docker-compose -f docker-compose_server.yml up -d --build`
+```bash
+git clone <URL_DO_REPOSITORIO>
+cd pet-adopt
+```
 
-Acesso:
+---
 
-Acessível apenas através do domínio público configurado no .env
+## 2. Configurar o Backend
 
-### Comandos Úteis
+Crie o arquivo:
 
-#### Parar a aplicação:
+```text
+back/.env
+```
 
-- Local
-  
-`docker-compose -f docker-compose.yml down`
+Utilize as variáveis de ambiente fornecidas pela equipe do projeto.
 
-- Produção
-  
-`docker-compose -f docker-compose_server.yml down`
+**Importante**
 
-- Todos os conteineres
+O arquivo `.env` não faz parte do repositório por conter informações sensíveis como:
 
-`docker-compose down`
+* Senhas
+* Tokens JWT
+* Configuração do MongoDB
+* Configuração de e-mail
 
+---
 
-### Solução de Problemas
+# Executando o Projeto
 
-1. Porta já em uso:
-Certifique-se de que não há outros serviços (como um MongoDB local ou outro projeto Node/React) rodando nas portas 3000 ou 3002 antes de subir o conteiner.
+O projeto possui dois ambientes diferentes.
+
+## Desenvolvimento
+
+Durante o desenvolvimento utilize:
+
+```bash
+docker compose -f docker-compose-local.yml up -d --build
+```
+
+Esse ambiente:
+
+* expõe o backend na porta **3002**
+* expõe o frontend na porta **5173**
+* não utiliza Nginx
+* não utiliza Cloudflare Tunnel
+
+### Acessos
+
+Frontend
+
+```
+http://localhost:5173
+```
+
+Backend
+
+```
+http://localhost:3002
+```
+
+Swagger
+
+```
+http://localhost:3002/api
+```
+
+---
+
+## Produção
+
+Para executar a infraestrutura utilizada no servidor:
+
+```bash
+docker compose -f docker-compose.yml up -d --build
+```
+
+Esse ambiente utiliza:
+
+* Nginx
+* Cloudflare Tunnel
+* Rede interna Docker
+
+As portas não são expostas diretamente para a máquina local.
+
+---
+
+# Parando os Containers
+
+Desenvolvimento
+
+```bash
+docker compose -f docker-compose-local.yml down
+```
+
+Produção
+
+```bash
+docker compose -f docker-compose.yml down
+```
+
+Todos os containers
+
+```bash
+docker compose down
+```
+
+---
+
+# Fluxo de Desenvolvimento
+
+Após iniciar os containers:
+
+1. Abra o projeto no VS Code.
+2. Faça suas alterações no frontend ou backend.
+3. Teste a funcionalidade.
+4. Realize o commit.
+5. Envie as alterações para sua branch.
+
+---
+
+# Desenvolvimento Frontend
+
+O frontend está localizado em:
+
+```text
+front/
+```
+
+Tecnologias utilizadas:
+
+* React
+* Vite
+* TypeScript
+
+Para localizar um componente ou texto da interface, utilize a pesquisa global do VS Code:
+
+```
+Ctrl + Shift + F
+```
+
+---
+
+# Desenvolvimento Backend
+
+O backend está localizado em:
+
+```text
+back/
+```
+
+É desenvolvido utilizando NestJS.
+
+A documentação da API pode ser acessada em:
+
+```
+http://localhost:3002/api
+```
+
+---
+
+# Comandos Úteis
+
+Reconstruir os containers
+
+```bash
+docker compose -f docker-compose-local.yml up -d --build
+```
+
+Visualizar os containers
+
+```bash
+docker ps
+```
+
+Visualizar os logs
+
+```bash
+docker compose logs
+```
+
+Logs do backend
+
+```bash
+docker logs petadopt_api
+```
+
+Logs do frontend
+
+```bash
+docker logs petadopt_front
+```
+
+---
+
+# Solução de Problemas
+
+## O frontend não abre
+
+Verifique se os containers estão em execução:
+
+```bash
+docker ps
+```
+
+O frontend deve estar publicado na porta:
+
+```
+5173
+```
+
+---
+
+## O backend não responde
+
+Confira os logs:
+
+```bash
+docker logs petadopt_api
+```
+
+---
+
+## Erro informando que o arquivo `.env` não foi encontrado
+
+Verifique se o arquivo existe em:
+
+```text
+back/.env
+```
+
+---
+
+## Porta em uso
+
+Certifique-se de que as portas abaixo não estejam sendo utilizadas por outro programa:
+
+* 5173 (Frontend)
+* 3002 (Backend)
+
+---
+
+# Observações
+
+* Utilize `docker-compose-local.yml` para desenvolvimento.
+* Utilize `docker-compose.yml` apenas para a infraestrutura de produção.
+* Nunca envie o arquivo `.env` para o repositório.
+* Nunca publique senhas, tokens ou credenciais no Git.
