@@ -1,0 +1,67 @@
+import React from "react";
+import { CircleAlert } from "lucide-react"; // Assumindo que CircleAlert é importado corretamente de lucide-react
+
+import { Container, ErrorContainer, ErrorMessage, InfoText, Label, RequiredAsterisk, StyledInput} from "./styles";
+import type { LargeInputProps } from "./types"; // Importando LargeInputProps de um arquivo types separado, conforme indicado
+
+const LargeInputField: React.FC<LargeInputProps> = ({
+  title,
+  required,
+  $fontSize: fontSize, 
+  placeholder,
+  $width: inputWidth, 
+  $height: inputHeight,
+  value,
+  onChange,
+  onClick,
+  onKeyDown,
+  $paddingRight: paddingRight = "24px", 
+  $readOnly: readOnly = false, 
+  $inputType: inputType = "Primário", 
+  error: hasError = false, 
+  errorMessage: errorText, 
+  children,
+  isDisabled,
+  maxLength = 272,
+}) => { 
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+      {title && (
+        <Label $fontSize={fontSize} isDisabled={isDisabled}>
+          {title}
+          {required && <RequiredAsterisk> *</RequiredAsterisk>}
+        </Label>
+      )}      
+
+      <Container $width={inputWidth} isDisabled={isDisabled}>
+        <StyledInput
+          disabled={isDisabled}
+          $readOnly={readOnly}
+          $width={inputWidth}
+          value={value}
+          onChange={onChange}
+          placeholder={placeholder}
+          $fontSize={fontSize}
+          onClick={onClick}
+          onKeyDown={onKeyDown}
+          $paddingRight={paddingRight}
+          $inputType={inputType}
+          $error={hasError}
+          maxLength={maxLength}
+          $height={inputHeight}
+        />
+        {children}
+        <InfoText $fontSize={fontSize}>Máximo de {maxLength} caracteres.</InfoText>
+      </Container>
+
+      {hasError && errorText && (
+        <ErrorContainer>
+          <CircleAlert color="#FF3B30" size={`calc(${fontSize} - 2px)`} />
+          <ErrorMessage $fontSize={fontSize}>{errorText}</ErrorMessage>
+        </ErrorContainer>
+      )}
+    </div>
+  );
+};
+
+export default LargeInputField;

@@ -1,0 +1,43 @@
+import { InfoContainer, InfoContent } from "./styles";
+import type { IInfo } from "./types";
+
+import PrimarySecondaryButton from "../PrimarySecondaryButton";
+import { useNavigate } from "react-router-dom";
+
+const Info = ({ subTitle, title, subtitleFontSize = "clamp(1.2rem, 3vw, 32)", titleFontSize = "clamp(1.5rem, 4vw, 2em)", buttonTitle, to, position, children }: IInfo) => {
+
+  const navigate = useNavigate();
+
+  const handleButtonClick = () => {
+    if (!to) return;
+
+    if (to.startsWith("http://") || to.startsWith("https://") || to.startsWith("mailto:")) {
+      window.open(to, "_blank", "noopener,noreferrer");
+      return;
+    }
+
+    navigate(to);
+  };
+
+  return (
+    <InfoContainer $position={position}>
+      <InfoContent $position={position} $subtitleFontSize={subtitleFontSize} $titleFontSize={titleFontSize}>
+        {subTitle && <h1>{subTitle}</h1>}
+        {title && <h3>{title}</h3>}
+        {children}
+      </InfoContent>
+
+      <PrimarySecondaryButton
+        width={"auto"}
+        buttonType={"Primário"}
+        isDisabled={false}
+        content={buttonTitle}
+        onClick={handleButtonClick}
+        paddingH="20px"
+        paddingV="10px"
+      />
+    </InfoContainer>
+  );
+};
+
+export default Info;

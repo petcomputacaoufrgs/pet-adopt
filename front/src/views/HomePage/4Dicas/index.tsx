@@ -1,0 +1,42 @@
+import { CardsContainer, HintsContainer, InfoDiv, Image } from "./styles";
+
+import ImageCard from "../../../components/ImageCard";
+import { getHintPath } from "../../../constants/routes";
+
+import imagemGatoFundo from "../../../assets/HomePageCat2.jpeg"
+import imagemPreenchimento from "../../../assets/HomePageLayer.png";
+
+
+const Dicas = () => {
+
+  return (
+    <HintsContainer id="hints">
+
+        <InfoDiv>
+          <div id="titleDiv">
+            <h3>Se liga</h3>
+            <h2>Nessas Dicas</h2>
+          </div>
+          
+        </InfoDiv>
+
+        <CardsContainer>
+          <ImageCard to={getHintPath("antes-de-adotar")} title="Antes de adotar." textColor={"#553525"} backgroundImage={imagemGatoFundo} width={"45vw"} heightDesktop={"48%"} heightMobile="25vh"/>
+
+          <ImageCard to={getHintPath("primeiros-dias")} title="Primeiros dias." textColor={"#553525"}  backgroundColor="#FF9944" width={"32vw"} heightDesktop={"48%"} heightMobile="25vh"/>
+
+          <ImageCard to={getHintPath("convivencia")} title="Convivência com outros animais." textColor={"#553525"}  backgroundColor="#45E4FF" width={"27vw"} heightDesktop={"48%"} heightMobile="25vh"/>
+
+          <Image src={imagemPreenchimento} $width={12}></Image>
+
+        </CardsContainer>
+        
+    </HintsContainer>
+
+  );
+};
+
+
+export default Dicas;
+
+

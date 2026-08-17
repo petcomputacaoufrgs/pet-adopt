@@ -1,0 +1,84 @@
+import { StyledInput, StyledRadioButton } from './styles';
+import type { RadioOption } from './types';
+
+function RadioButton({
+  label,
+  value,
+  groupName,
+  checked,
+  onChange,
+  customInputValue,
+  setCustomInputValue,
+  onSelectToggle,
+  fontSize,
+  required = true,
+  userFillOption,
+  index,
+  userFillInputWidth = "100%"
+}: RadioOption) {
+
+
+  // Implementa um toggle para desmarcar se 'required' for falso
+  const handleToggleSelection = () => {
+    if (!required && checked) {
+      if (onChange) onChange('');
+      onSelectToggle(-1); // Desseleciona o radio button
+
+    } else {
+      if (onChange) onChange(value); // Seleciona o radio button
+      onSelectToggle(index);
+      if (setCustomInputValue) setCustomInputValue('');
+    }
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value;
+    if (setCustomInputValue) setCustomInputValue(newValue);
+    if (onChange) onChange(newValue);
+  };
+
+
+
+
+  return (
+    <label
+      key={value}
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'flex-start',
+        gap: '0.75em', // 12px / 16px (base font size) = 0.75em
+        fontSize: fontSize,
+        color: '#553525',
+      }}
+    >
+
+    <div style={{display: "flex",  gap: '0.75em'}}>
+      <StyledRadioButton
+        type="radio"
+        name={groupName}
+        value={value}
+        onChange={handleToggleSelection} 
+        checked={checked}
+      />
+      {label}
+    </div>
+
+
+     {userFillOption && checked && (
+        <StyledInput
+          $inputWidth={userFillInputWidth}
+          $fontSize={fontSize}
+          type="text"
+          placeholder="Informe aqui"
+          value={customInputValue || ''}
+          onChange={handleInputChange}
+        />
+      )}
+
+
+    </label>
+  );
+}
+
+export default RadioButton;
