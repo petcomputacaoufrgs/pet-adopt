@@ -27,15 +27,23 @@ async function bootstrap() {
   // pega variáveis do .env
   const frontendUrl =
     configService.get<string>('FRONTEND_URL') || 'http://localhost:5173';
+  const allowedOrigins = [frontendUrl, 'http://localhost:5173', 'http://localhost:3000', 'http://127.0.0.1:5173'];
   const port = configService.get<string>('PORT') || '3002';
 
   // Configuração CORS para permitir cookies e credenciais
   app.enableCors({
-    origin: [frontendUrl], // URL do frontend
-    credentials: true, // Permite envio de cookies e credenciais
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+        return;
+      }
+
+      callback(new Error('Not allowed by CORS'));
+    },
+    credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
-    exposedHeaders: ['Set-Cookie'], // Permite que o frontend acesse o header Set-Cookie
+    exposedHeaders: ['Set-Cookie'],
   });
   
   app.setGlobalPrefix('api/v1');
