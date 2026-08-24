@@ -25,6 +25,7 @@ const Login: React.FC = () => {
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
   // Verificar se há mensagem de erro de autenticação ao carregar
@@ -39,8 +40,11 @@ const Login: React.FC = () => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isSubmitting) return;
+
     setErrorMessage("");
     setSuccessMessage("");
+    setIsSubmitting(true);
 
     try {
       const response = await authService.login(email, password);
@@ -53,9 +57,7 @@ const Login: React.FC = () => {
       setSuccessMessage("Login realizado com sucesso!");
       
       // Redirecionar para a home após login bem-sucedido
-      setTimeout(() => {
-        window.location.href = '/';
-      }, 300);
+      navigate('/', { replace: true });
       
     } catch (err: any) {
       if (err.response?.status === 401) {
@@ -68,6 +70,8 @@ const Login: React.FC = () => {
       } else {
         setErrorMessage('Ocorreu um erro ao fazer login. Por favor, tente novamente.');
       }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -156,7 +160,7 @@ const Login: React.FC = () => {
               
               <BasicInput
                 title="E-mail"
-                required = {false} 
+                required
                 placeholder="Insira seu email aqui"
                 value={email}
                 $fontSize="1rem"
@@ -166,7 +170,7 @@ const Login: React.FC = () => {
 
               <PasswordInputField
                   title="Senha"
-                  required={false}
+                  required
                   isDisabled={false}
                   $fontSize="1rem" 
                   placeholder="Insira sua senha aqui"
@@ -180,7 +184,15 @@ const Login: React.FC = () => {
               
             </LoginFormInputsContainer>
             
-            <PrimarySecondaryButton width="100%" buttonType="Primário" content="Entrar" onClick={handleLogin} paddingH="5px" paddingV="10px"/>
+            <PrimarySecondaryButton
+              width="100%"
+              buttonType="Primário"
+              content={isSubmitting ? "Entrando..." : "Entrar"}
+              type="submit"
+              isDisabled={isSubmitting}
+              paddingH="5px"
+              paddingV="10px"
+            />
 
             <LoginFormLinksContainer>
 

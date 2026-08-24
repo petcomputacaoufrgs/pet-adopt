@@ -58,6 +58,7 @@ function PasswordInput({
           $readOnly={$readOnly || isDisabled}
           $width={$width}
           type={isDisabled ? undefined : inputType}
+          required={required}
           value={isDisabled ? undefined : value}
           onChange={isDisabled ? undefined : onChange}
           placeholder={placeholder}

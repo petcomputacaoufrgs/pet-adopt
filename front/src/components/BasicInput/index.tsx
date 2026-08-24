@@ -47,6 +47,7 @@ function BasicInput({
           $readOnly={$readOnly}
           $width={"100%"}
           type="text"
+          required={required}
           value={value}
           onChange={onChange}
           placeholder={placeholder}

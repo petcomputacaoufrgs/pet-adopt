@@ -5,7 +5,8 @@ export interface IButton {
     isDisabled?: boolean;
     highlighted?: boolean;
     content: React.ReactNode;
-    onClick: any;
+    onClick?: any;
+    type?: 'button' | 'submit' | 'reset';
     $flex?: boolean;
     paddingV?: string; 
     paddingH?: string;

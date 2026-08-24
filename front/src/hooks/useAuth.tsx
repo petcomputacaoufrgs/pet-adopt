@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { authService } from '../services';
 
 interface User {
   _id: string;
@@ -16,7 +17,7 @@ interface AuthState {
 
 export const useAuth = (): AuthState & {
   hasRole: (requiredRoles: string[]) => boolean;
-  logout: (redirect?: boolean) => void;
+  logout: (redirect?: boolean) => Promise<void>;
 } => {
   // 1. ESTADO LOCAL
   const [user, setUser] = useState<User | null>(null);        // Dados do usuário
@@ -57,7 +58,13 @@ export const useAuth = (): AuthState & {
   };
 
   // 4. LOGOUT
-  const logout = (redirect: boolean = true) => {
+  const logout = async (redirect: boolean = true) => {
+    try {
+      await authService.logout();
+    } catch {
+      // A limpeza local ainda deve ocorrer se a sessão já tiver expirado no servidor.
+    }
+
     localStorage.removeItem('user');
     localStorage.removeItem('authToken');
     setUser(null);                          // Limpa dados locais

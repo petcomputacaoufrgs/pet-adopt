@@ -26,7 +26,7 @@ async function bootstrap() {
 
   // pega variáveis do .env
   const frontendUrl =
-    configService.get<string>('FRONTEND_URL') || 'http://localhost:3000';
+    configService.get<string>('FRONTEND_URL') || 'http://localhost:5173';
   const port = configService.get<string>('PORT') || '3002';
 
   // Configuração CORS para permitir cookies e credenciais

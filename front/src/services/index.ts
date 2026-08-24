@@ -14,6 +14,8 @@ import type { PetFilters } from './filters/petFilters';
 export const authService = {
   login: (email: string, password: string) => 
     api.post('/auth/login', { email, password }),
+
+  logout: () => api.post('/auth/logout'),
   
   signupNgoMember: (userData: any) => 
     api.post('/auth/signup/ngo-member', userData),
