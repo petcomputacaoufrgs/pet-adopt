@@ -1,4 +1,14 @@
-import { Body, Controller, Delete, Get, Param, Query, Patch, Post, ValidationPipe, Request } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Query,
+  Patch,
+  ValidationPipe,
+  Request,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { ApiTags } from '@nestjs/swagger';
@@ -21,7 +31,7 @@ export class UserController {
   @Get()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.ADMIN)
-  getAll(@Query () query: any) {
+  getAll(@Query() query: any) {
     return this.userService.getAll(query);
   }
 
@@ -41,8 +51,7 @@ export class UserController {
     return this.userService.getApprovedMembers(ngoId, query);
   }
 
-
-  @Get('approvedMembers/page/:ngoId') 
+  @Get('approvedMembers/page/:ngoId')
   @UseGuards(JwtAuthGuard, RolesGuard, NgoOwnershipGuard)
   @Roles(Role.ADMIN, Role.NGO_ADMIN)
   @NgoOwnership({ resourceIdParam: 'ngoId', paramIsNgoId: true })
@@ -50,7 +59,7 @@ export class UserController {
     return this.userService.getPage(ngoId, query, true);
   }
 
-  @Get('unapprovedMembers/page/:ngoId') 
+  @Get('unapprovedMembers/page/:ngoId')
   @UseGuards(JwtAuthGuard, RolesGuard, NgoOwnershipGuard)
   @Roles(Role.ADMIN, Role.NGO_ADMIN)
   @NgoOwnership({ resourceIdParam: 'ngoId', paramIsNgoId: true })
@@ -62,16 +71,16 @@ export class UserController {
   @Get(':id')
   @UseGuards(JwtAuthGuard, RolesGuard, SelfOrNgoOwnershipGuard)
   @Roles(Role.ADMIN, Role.NGO_ADMIN, Role.NGO_MEMBER)
-  @SelfOrNgoOwnership({ 
-    userIdParam: 'id', 
-    allowSelf: true, 
+  @SelfOrNgoOwnership({
+    userIdParam: 'id',
+    allowSelf: true,
     allowNgoOwnership: true,
-    checkInService: true 
+    checkInService: true,
   })
-  getById(@Param('id') id: string, @Request() req: any) {    
+  getById(@Param('id') id: string, @Request() req: any) {
     return this.userService.getById(id, req.userNgoId);
   }
-  
+
   @Get('name/:name')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.ADMIN)
@@ -90,11 +99,11 @@ export class UserController {
   @Delete(':id')
   @UseGuards(JwtAuthGuard, RolesGuard, SelfOrNgoOwnershipGuard)
   @Roles(Role.ADMIN, Role.NGO_ADMIN)
-  @SelfOrNgoOwnership({ 
+  @SelfOrNgoOwnership({
     userIdParam: 'id',
     allowSelf: false, // Não permite deletar a própria conta
     allowNgoOwnership: true,
-    checkInService: true 
+    checkInService: true,
   })
   delete(@Param('id') id: string, @Request() req: any) {
     return this.userService.delete(id, req.userNgoId);
@@ -104,13 +113,17 @@ export class UserController {
   @Patch(':id')
   @UseGuards(JwtAuthGuard, RolesGuard, SelfOrNgoOwnershipGuard)
   @Roles(Role.ADMIN, Role.NGO_ADMIN, Role.NGO_MEMBER)
-  @SelfOrNgoOwnership({ 
-    userIdParam: 'id', 
-    allowSelf: true, 
+  @SelfOrNgoOwnership({
+    userIdParam: 'id',
+    allowSelf: true,
     allowNgoOwnership: false,
-    checkInService: true 
+    checkInService: true,
   })
-  update(@Param('id') id: string, @Body(ValidationPipe) updateUserDto: UpdateUserDto, @Request() req: any) {
+  update(
+    @Param('id') id: string,
+    @Body(ValidationPipe) updateUserDto: UpdateUserDto,
+    @Request() req: any,
+  ) {
     return this.userService.update(id, updateUserDto, req.userNgoId);
   }
   // Aprovar membro: NGO_ADMIN da mesma ONG

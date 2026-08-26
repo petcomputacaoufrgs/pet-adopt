@@ -15,7 +15,7 @@ import { PetModule } from '../pet/pet.module';
       },
     ]),
     forwardRef(() => UserModule),
-    PetModule
+    PetModule,
   ],
   controllers: [NgoController],
   providers: [NgoService],

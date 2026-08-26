@@ -23,7 +23,7 @@ import { APP_GUARD } from '@nestjs/core';
     ThrottlerModule.forRoot([
       {
         ttl: 60000, // 60 segundos até resetar contagem
-        limit: 30,  // 30 requisições por TTL (default global)
+        limit: 30, // 30 requisições por TTL (default global)
       },
     ]),
     PetModule,

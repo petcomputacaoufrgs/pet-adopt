@@ -11,12 +11,13 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   app.use(cookieParser());
-  app.useGlobalPipes(new ValidationPipe({
-    transform: true,
-    whitelist: true,
-  }));
-  
-  
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      whitelist: true,
+    }),
+  );
+
   const configService = app.get(ConfigService);
 
   // Servir arquivos estáticos da pasta uploads
@@ -27,7 +28,12 @@ async function bootstrap() {
   // pega variáveis do .env
   const frontendUrl =
     configService.get<string>('FRONTEND_URL') || 'http://localhost:5173';
-  const allowedOrigins = [frontendUrl, 'http://localhost:5173', 'http://localhost:3000', 'http://127.0.0.1:5173'];
+  const allowedOrigins = [
+    frontendUrl,
+    'http://localhost:5173',
+    'http://localhost:3000',
+    'http://127.0.0.1:5173',
+  ];
   const port = configService.get<string>('PORT') || '3002';
 
   // Configuração CORS para permitir cookies e credenciais
@@ -45,9 +51,8 @@ async function bootstrap() {
     allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
     exposedHeaders: ['Set-Cookie'],
   });
-  
-  app.setGlobalPrefix('api/v1');
 
+  app.setGlobalPrefix('api/v1');
 
   const config = new DocumentBuilder()
     .setTitle('PetAdopt - V1')

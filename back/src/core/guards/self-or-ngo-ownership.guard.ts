@@ -1,4 +1,9 @@
-import { Injectable, CanActivate, ExecutionContext, ForbiddenException } from '@nestjs/common';
+import {
+  Injectable,
+  CanActivate,
+  ExecutionContext,
+  ForbiddenException,
+} from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Role } from '../enums/role.enum';
 
@@ -7,13 +12,13 @@ export const SELF_OR_NGO_OWNERSHIP_KEY = 'selfOrNgoOwnership';
 export interface SelfOrNgoOwnershipConfig {
   // Campo que contém o userId do recurso (ex: 'id' para /users/:id)
   userIdParam: string;
-  
+
   // Permite acesso à própria conta
   allowSelf?: boolean;
-  
+
   // Permite NGO_ADMIN acessar membros da própria ONG
   allowNgoOwnership?: boolean;
-  
+
   // Se precisa buscar o usuário no banco para verificar o ngoId
   checkInService?: boolean;
 }
@@ -59,14 +64,14 @@ export class SelfOrNgoOwnershipGuard implements CanActivate {
         }
         // Se não precisa verificar no service, bloqueia (não temos info suficiente aqui)
         throw new ForbiddenException(
-          'Não é possível verificar ownership sem buscar dados do usuário'
+          'Não é possível verificar ownership sem buscar dados do usuário',
         );
       }
     }
 
     // Nenhuma condição atendida
     throw new ForbiddenException(
-      'Você não tem permissão para acessar esta conta'
+      'Você não tem permissão para acessar esta conta',
     );
   }
 }

@@ -10,10 +10,14 @@ const MIN_PHOTOS = 1; // Mantendo 1 como no controller original (ajuste se a sug
 
 @Injectable()
 export class PhotoValidationPipe implements PipeTransform {
-  async transform(files: Express.Multer.File[]): Promise<Express.Multer.File[]> {
+  async transform(
+    files: Express.Multer.File[],
+  ): Promise<Express.Multer.File[]> {
     if (!files || files.length === 0) {
       // Se a validação for estritamente 'required', você pode lançar um erro aqui.
-      throw new BadRequestException('No fotos sent. At least one photo is required.');
+      throw new BadRequestException(
+        'No fotos sent. At least one photo is required.',
+      );
       // Neste caso, o multer já garante que a propriedade 'photos' venha.
       // Se não houver arquivos, retorna um array vazio (mas o Interceptor deve garantir isso).
       return files;

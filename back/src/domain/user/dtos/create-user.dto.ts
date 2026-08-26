@@ -1,14 +1,14 @@
-import { IsEmail, IsNotEmpty, IsOptional, IsString, IsEnum, ValidateIf, MaxLength, Max } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, MaxLength } from 'class-validator';
 import { Role } from '../../../core/enums/role.enum';
 
 // Interface interna para criação de usuários com todos os campos necessários
 export interface UserData {
-    name: string;
-    email: string;
-    password: string;
-    confirmPassword: string;
-    role: Role;
-    ngoId?: string;
+  name: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+  role: Role;
+  ngoId?: string;
 }
 
 // basic-user.dto.ts (para ADMIN)
@@ -26,7 +26,7 @@ export class BasicUserDto {
   @IsString()
   @MaxLength(255)
   password: string;
-  
+
   @IsNotEmpty()
   @IsString()
   @MaxLength(255)
@@ -39,4 +39,3 @@ export class NgoMemberDto extends BasicUserDto {
   @IsString()
   ngoId: string;
 }
-  

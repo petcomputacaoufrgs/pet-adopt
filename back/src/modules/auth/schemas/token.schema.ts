@@ -17,10 +17,10 @@ export class Token {
   @Prop({ required: true })
   token: string; // A string do token (refresh ou password reset)
 
-  @Prop({ 
+  @Prop({
     required: true,
     enum: Object.values(TokenType),
-    default: TokenType.REFRESH 
+    default: TokenType.REFRESH,
   })
   type: TokenType;
 

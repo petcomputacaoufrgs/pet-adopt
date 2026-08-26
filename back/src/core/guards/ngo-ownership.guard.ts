@@ -1,4 +1,9 @@
-import { Injectable, CanActivate, ExecutionContext, ForbiddenException } from '@nestjs/common';
+import {
+  Injectable,
+  CanActivate,
+  ExecutionContext,
+  ForbiddenException,
+} from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Role } from '../enums/role.enum';
 
@@ -8,10 +13,10 @@ export interface NgoOwnershipConfig {
   // De onde extrair o ngoId do recurso
   resourceIdParam?: string; // Nome do parâmetro da rota (ex: 'id', 'petId')
   resourceIdBody?: string; // Campo no body (ex: 'ngoId', 'pet.ngoId')
-  
+
   // Se o parâmetro da rota É o ngoId (ex: PATCH /ngos/:id onde :id é o ngoId)
   paramIsNgoId?: boolean;
-  
+
   // Se precisa buscar o recurso no banco para obter o ngoId
   // Nesse caso, o guard delegará para o service fazer a validação
   checkInService?: boolean;
@@ -44,9 +49,7 @@ export class NgoOwnershipGuard implements CanActivate {
 
     // Se o usuário não tem ngoId, não pode acessar recursos de ONG
     if (!user.ngoId) {
-      throw new ForbiddenException(
-        'Usuário não pertence a nenhuma ONG'
-      );
+      throw new ForbiddenException('Usuário não pertence a nenhuma ONG');
     }
 
     // Verificar ownership baseado na configuração
@@ -54,7 +57,7 @@ export class NgoOwnershipGuard implements CanActivate {
 
     if (resourceNgoId && resourceNgoId !== user.ngoId) {
       throw new ForbiddenException(
-        'Você não tem permissão para acessar recursos de outra ONG'
+        'Você não tem permissão para acessar recursos de outra ONG',
       );
     }
 
@@ -67,7 +70,10 @@ export class NgoOwnershipGuard implements CanActivate {
     return true;
   }
 
-  private extractResourceNgoId(request: any, config: NgoOwnershipConfig): string | null {
+  private extractResourceNgoId(
+    request: any,
+    config: NgoOwnershipConfig,
+  ): string | null {
     // 1. Tentar extrair do body
     if (config.resourceIdBody) {
       const ngoId = this.getNestedProperty(request.body, config.resourceIdBody);

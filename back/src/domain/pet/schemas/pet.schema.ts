@@ -6,12 +6,12 @@ export class Pet {
     required: true,
   })
   name: string;
-  
+
   @Prop({
     required: true,
   })
   age: string;
-  
+
   @Prop({
     required: true,
   })
@@ -19,7 +19,7 @@ export class Pet {
 
   @Prop()
   size: string;
-  
+
   @Prop({
     required: true,
   })
@@ -47,7 +47,7 @@ export class Pet {
     required: true,
   })
   forTempHome: boolean;
-  
+
   @Prop({
     required: true,
   })
@@ -67,7 +67,7 @@ export class Pet {
     required: true,
   })
   state: string;
-  
+
   @Prop()
   observations: string;
 }

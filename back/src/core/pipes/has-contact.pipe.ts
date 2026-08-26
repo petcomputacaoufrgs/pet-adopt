@@ -6,7 +6,7 @@ export class HasContactPipe implements PipeTransform {
     // Se o valor tem a propriedade 'ngo', valida dentro dela (caso NgoSignupDto)
     // Caso contrário, valida diretamente (caso CreateNgoDto ou UpdateNgoDto)
     const ngoData = value.ngo || value;
-    
+
     const hasSocialMedia =
       ngoData.facebook ||
       ngoData.instagram ||

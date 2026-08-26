@@ -12,8 +12,8 @@ import { StatisticsModule } from '../statistics/statistics.module';
         name: Pet.name,
         schema: PetSchema,
       },
-    ]), 
-    StatisticsModule
+    ]),
+    StatisticsModule,
   ],
   controllers: [PetController],
   providers: [PetService],

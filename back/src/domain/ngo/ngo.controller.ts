@@ -1,4 +1,12 @@
-import { Body, Controller, Delete, Get,Query ,Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Query,
+  Param,
+  Patch,
+} from '@nestjs/common';
 import { NgoService } from './ngo.service';
 import { UpdateNgoDto } from './dtos/update-ngo.dto';
 import { ApiTags } from '@nestjs/swagger';
@@ -84,6 +92,4 @@ export class NgoController {
   async approveNgo(@Param('id') id: string) {
     return this.ngoService.approve(id);
   }
-
-
 }

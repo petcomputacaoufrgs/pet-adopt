@@ -30,9 +30,9 @@ export class User {
   })
   role: Role;
 
-  @Prop({ 
-    type: String, 
-    required: false 
+  @Prop({
+    type: String,
+    required: false,
   })
   ngoId?: string;
 }

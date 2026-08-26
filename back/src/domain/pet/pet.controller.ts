@@ -1,6 +1,21 @@
 // pet.controller.ts
 
-import { Body, Controller, Delete, Get, Param, Post, Patch, Query, UseInterceptors, UploadedFiles, UsePipes, BadRequestException, NotFoundException, UseGuards, Request } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Patch,
+  Query,
+  UseInterceptors,
+  UploadedFiles,
+  BadRequestException,
+  NotFoundException,
+  UseGuards,
+  Request,
+} from '@nestjs/common';
 import { PetService } from './pet.service';
 import { CreatePetDto } from './dtos/create-pet.dto';
 import { UpdatePetDto } from './dtos/update-pet.dto';
@@ -35,21 +50,20 @@ export class PetController {
   // TO DO: Aplicar paginação corretamente no front usando esse método aqui
   @Throttle({ default: { limit: 30, ttl: 60000 } }) // 30 req/min
   @Get('page')
-  getPage(@Query() query: any) { 
-    
+  getPage(@Query() query: any) {
     const page = Number(query.page) || 1;
     const limit = Number(query.limit) || 12;
 
     delete query.page;
     delete query.limit;
-    
+
     return this.petService.getPage(query, page, limit);
   }
 
   @Throttle({ default: { limit: 30, ttl: 60000 } }) // 30 req/min
   @Get('recent')
-    async getRecentPets() {
-        return this.petService.getRecentPets();
+  async getRecentPets() {
+    return this.petService.getRecentPets();
   }
 
   @Throttle({ default: { limit: 50, ttl: 60000 } }) // 50 req/min
@@ -76,7 +90,10 @@ export class PetController {
         if (file.mimetype.match(/\/(jpg|jpeg|png|gif)$/)) {
           callback(null, true);
         } else {
-          callback(new BadRequestException('File format not supported!'), false);
+          callback(
+            new BadRequestException('File format not supported!'),
+            false,
+          );
         }
       },
     }),
@@ -84,20 +101,22 @@ export class PetController {
   async createWithPhotos(
     @UploadedFiles(new PhotoValidationPipe()) files: Express.Multer.File[],
     @Body() createPetDto: CreatePetDto,
-  ) {    
+  ) {
     if (!files || files.length === 0) {
-        throw new BadRequestException('At least one photo is required.');
+      throw new BadRequestException('At least one photo is required.');
     }
 
     if (files.length > MAX_PHOTOS) {
-        throw new BadRequestException(`A maximum of ${MAX_PHOTOS} photos are allowed.`);
+      throw new BadRequestException(
+        `A maximum of ${MAX_PHOTOS} photos are allowed.`,
+      );
     }
 
-   const photoPaths = files.map((file) => `/uploads/${file.filename}`);
-   createPetDto.photos = photoPaths;
+    const photoPaths = files.map((file) => `/uploads/${file.filename}`);
+    createPetDto.photos = photoPaths;
 
-   return this.petService.create(createPetDto);
- }
+    return this.petService.create(createPetDto);
+  }
 
   // Edição de animal - permite atualização parcial (inclusive só fotos)
   @Patch(':id')
@@ -117,7 +136,10 @@ export class PetController {
         if (file.mimetype.match(/\/(jpg|jpeg|png|gif)$/)) {
           callback(null, true);
         } else {
-          callback(new BadRequestException('File format not supported!'), false);
+          callback(
+            new BadRequestException('File format not supported!'),
+            false,
+          );
         }
       },
     }),
@@ -128,16 +150,18 @@ export class PetController {
     @Body() updatePetDto: UpdatePetDto,
     @Request() req: any,
   ) {
-    
-
     // Se novas fotos foram enviadas, adiciona os caminhos
     if (files && files.length > 0) {
       const photoPaths = files.map((file) => `/uploads/${file.filename}`);
       updatePetDto.photos = photoPaths;
     }
 
-    const updatedPet = await this.petService.updatePartial(id, updatePetDto, req.userNgoId);
-    
+    const updatedPet = await this.petService.updatePartial(
+      id,
+      updatePetDto,
+      req.userNgoId,
+    );
+
     if (!updatedPet) {
       throw new NotFoundException('Pet not found');
     }
@@ -151,11 +175,11 @@ export class PetController {
   @NgoOwnership({ resourceIdParam: 'id', checkInService: true })
   async delete(@Param('id') id: string, @Request() req: any) {
     const result = await this.petService.delete(id, req.userNgoId);
-    
+
     if (!result) {
       throw new NotFoundException('Pet not found');
     }
-    
+
     return result;
   }
 }

@@ -18,9 +18,12 @@ export class EncryptionService {
   }
 
   // Validar força da senha
-  validatePasswordStrength(password: string): { valid: boolean; errors: string[] } {
+  validatePasswordStrength(password: string): {
+    valid: boolean;
+    errors: string[];
+  } {
     const errors: string[] = [];
-    
+
     if (password.length < 8) {
       errors.push('Senha deve ter no mínimo 8 caracteres');
     }
@@ -36,7 +39,7 @@ export class EncryptionService {
     if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
       errors.push('Senha deve conter ao menos um caractere especial');
     }
-    
+
     return { valid: errors.length === 0, errors };
   }
 }

@@ -6,12 +6,13 @@ import { Statistics } from './schemas/statistics.schema';
 @Injectable()
 export class StatisticsService {
   constructor(
-    @InjectModel(Statistics.name) private statisticsModel: Model<Statistics>
+    @InjectModel(Statistics.name) private statisticsModel: Model<Statistics>,
   ) {}
 
   async addRecentPet(petId: Types.ObjectId) {
-    // Verifica se já existe o documento de estatísticas, se não cria um novo 
-    const stats = await this.statisticsModel.findOne() || new this.statisticsModel();
+    // Verifica se já existe o documento de estatísticas, se não cria um novo
+    const stats =
+      (await this.statisticsModel.findOne()) || new this.statisticsModel();
 
     // Adiciona novo ID no início do array
     stats.recentPets.unshift(petId);
@@ -20,7 +21,7 @@ export class StatisticsService {
 
     // Atualiza timestamp
     stats.lastUpdated = new Date();
-    
+
     return await stats.save();
   }
 
@@ -34,9 +35,7 @@ export class StatisticsService {
     if (!stats) return;
 
     // Remove o petId do array de pets recentes
-    stats.recentPets = stats.recentPets.filter(
-      id => !id.equals(petId)
-    );
+    stats.recentPets = stats.recentPets.filter((id) => !id.equals(petId));
 
     stats.lastUpdated = new Date();
     return await stats.save();

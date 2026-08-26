@@ -23,13 +23,13 @@ import { MailModule } from '../mail/mail.module';
   providers: [
     // Serviço principal (orquestrador)
     AuthService,
-    
+
     // Serviços especializados
     TokenService,
     PasswordService,
     SignupService,
     TokenCleanupService,
-    
+
     // Strategies do Passport
     LocalStrategy,
     JwtStrategy,
