@@ -53,20 +53,24 @@ export default function AnimalFilter({ hasBorder = true }) {
   
   // SINCRONIA URL -> STATE (Para botão Voltar/Refresh)
   useEffect(() => {
-    setName(searchParams.get("name") || "");
-    setCity(searchParams.get("city") || "");
-    setBreed(searchParams.get("breed") || "");
-    
-    // Converte Back -> Front ao ler da URL
-    setSelectedState(searchParams.get("state") || "");
-    setSelectedAge(mapBackendToAge(searchParams.get("age") || ""));
-    setSelectedSize(mapBackendToSize(searchParams.get("size") || ""));
-    setSelectedSex(mapBackendToSex(searchParams.get("sex") || ""));
-    setSelectedSituation(searchParams.get("situation") || "");
-    
-    const specieParam = searchParams.get("species");
+    // Agrupa as atualizações em timeout para evitar setState síncrono dentro do effect
+    const id = window.setTimeout(() => {
+      setName(searchParams.get("name") || "");
+      setCity(searchParams.get("city") || "");
+      setBreed(searchParams.get("breed") || "");
 
-    setSelectedSpecie(mapSpeciesStringToIndex(specieParam || ""));
+      // Converte Back -> Front ao ler da URL
+      setSelectedState(searchParams.get("state") || "");
+      setSelectedAge(mapBackendToAge(searchParams.get("age") || ""));
+      setSelectedSize(mapBackendToSize(searchParams.get("size") || ""));
+      setSelectedSex(mapBackendToSex(searchParams.get("sex") || ""));
+      setSelectedSituation(searchParams.get("situation") || "");
+
+      const specieParam = searchParams.get("species");
+      setSelectedSpecie(mapSpeciesStringToIndex(specieParam || ""));
+    }, 0);
+
+    return () => window.clearTimeout(id);
   }, [searchParams]);
 
 
@@ -91,7 +95,7 @@ export default function AnimalFilter({ hasBorder = true }) {
     
     // Filtra chaves vazias para não ficar ?name=&city= na URL
     const cleanData = Object.fromEntries(
-      Object.entries(formData).filter(([_, v]) => v != null && v !== "")
+      Object.entries(formData).filter(([, v]) => v != null && v !== "")
     );
 
     // Dispara o GET (Loader)

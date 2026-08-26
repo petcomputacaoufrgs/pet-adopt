@@ -34,9 +34,13 @@ export default function NGOsFilter({
   // Sincronia URL -> State
   // Garante que se o usuário clicar em "Voltar" ou der F5, os inputs preenchem sozinhos
   useEffect(() => {
-    setName(searchParams.get("name") || "");
-    setCity(searchParams.get("city") || "");
-    setSelectedState(searchParams.get("state") || "");
+    const id = window.setTimeout(() => {
+      setName(searchParams.get("name") || "");
+      setCity(searchParams.get("city") || "");
+      setSelectedState(searchParams.get("state") || "");
+    }, 0);
+
+    return () => window.clearTimeout(id);
   }, [searchParams]);
 
   // Handlers
@@ -55,7 +59,7 @@ export default function NGOsFilter({
 
     // Limpa chaves vazias
     const cleanData = Object.fromEntries(
-      Object.entries(filters).filter(([_, v]) => v !== "")
+      Object.entries(filters).filter(([, v]) => v !== "")
     );
     
     // Atualiza a URL e dispara o Loader

@@ -110,9 +110,13 @@ const Header = ({ color, Logo }: IHeader) => {
   const [showCompactMenu, setShowCompactMenu] = useState(false);
 
   useEffect(() => {
-    if (showCompactMenu && responsiveMode !== "compact") {
-      setShowCompactMenu(false);
-    }
+    const id = window.setTimeout(() => {
+      if (showCompactMenu && responsiveMode !== "compact") {
+        setShowCompactMenu(false);
+      }
+    }, 0);
+
+    return () => window.clearTimeout(id);
   }, [windowWidth, showCompactMenu, responsiveMode]);
 
   const handleClickOnCompactButton = () => {

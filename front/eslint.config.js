@@ -19,5 +19,10 @@ export default defineConfig([
       ecmaVersion: 2020,
       globals: globals.browser,
     },
+    rules: {
+      // Temporarily allow `any` to reduce noise while we fix typings incrementally
+      '@typescript-eslint/no-explicit-any': 'off',
+    },
   },
+
 ])

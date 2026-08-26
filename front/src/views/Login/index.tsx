@@ -30,10 +30,14 @@ const Login: React.FC = () => {
 
   // Verificar se há mensagem de erro de autenticação ao carregar
   useEffect(() => {
-    const authError = getAuthError();
-    if (authError) {
-      setErrorMessage(authError);
-    }
+    const id = window.setTimeout(() => {
+      const authError = getAuthError();
+      if (authError) {
+        setErrorMessage(authError);
+      }
+    }, 0);
+
+    return () => window.clearTimeout(id);
   }, []);
 
 

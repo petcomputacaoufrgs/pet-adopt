@@ -102,7 +102,7 @@ export const InfoDiv = styled.div`
 `
 
 
-export const Image = styled.img<{$width: Number}>`
+export const Image = styled.img<{$width: number}>`
   width: ${(props) => `${props.$width}%`};;
   height: auto; 
 

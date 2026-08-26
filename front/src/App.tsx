@@ -107,7 +107,7 @@ const router = createBrowserRouter([
           throw new Response("Unauthorized", { status: 401 });
         }
         return { user: newUser.data };
-      } catch (err) {
+      } catch {
         localStorage.removeItem("user");
         throw new Response("Unauthorized", { status: 401 });
       }
@@ -193,9 +193,9 @@ const router = createBrowserRouter([
             try {
               const response = await ngoService.getApproved();
               // Já entregamos o array mapeado e limpo pro componente
-              return response.data.map((ngo: any) => ({
+              return response.data.map((ngo: { _id?: string; id?: string; name?: string; email?: string }) => ({
                 id: ngo._id || ngo.id,
-                label: `${ngo.name} - ${ngo.email}`
+               label: `${ngo.name || ''} - ${ngo.email || ''}`
               }));
             } catch (error) {
               console.error('Erro ao buscar ONGs:', error);
@@ -337,10 +337,11 @@ const router = createBrowserRouter([
               }
           }
 
-            catch(err: any) {
-              const errorMessage = err.response?.data?.message || "Erro ao atualizar dados";
+            catch (error: unknown) {
+              const e = error as { response?: { data?: { message?: string } } };
+              const errorMessage = e.response?.data?.message || "Erro ao atualizar dados";
               return { success: false, error: errorMessage };
-            }   
+            }
       }
     },
 

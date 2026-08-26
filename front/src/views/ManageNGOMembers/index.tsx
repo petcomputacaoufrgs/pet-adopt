@@ -71,29 +71,33 @@ const ManageNGOMembers: React.FC = () => {
 
   // Monitora a resposta da Action de Delete
   useEffect(() => {
-    if (fetcher.state === "idle" && fetcher.data) {
-      if (fetcher.data.success) {
+    const id = window.setTimeout(() => {
+      if (fetcher.state === "idle" && fetcher.data) {
+        if (fetcher.data.success) {
 
-        showToast({
-          success: true,
-          message: "Administrador excluído com sucesso!",
-          description: "O administrador foi removido do sistema."
-        });
+          showToast({
+            success: true,
+            message: "Administrador excluído com sucesso!",
+            description: "O administrador foi removido do sistema."
+          });
 
-        setMemberToDelete(null); // Fecha o modal
-        fetcher.reset();
-        
-      } else if (fetcher.data.error) {
-        showToast({
-          success: false,
-          message: "Erro ao excluir administrador.",
-          description: fetcher.data.error
-        });
+          setMemberToDelete(null); // Fecha o modal
+          fetcher.reset();
+          
+        } else if (fetcher.data.error) {
+          showToast({
+            success: false,
+            message: "Erro ao excluir administrador.",
+            description: fetcher.data.error
+          });
 
-        setMemberToDelete(null); // Fecha o modal
-        fetcher.reset();
+          setMemberToDelete(null); // Fecha o modal
+          fetcher.reset();
+        }
       }
-    }
+    }, 0);
+
+    return () => window.clearTimeout(id);
   }, [fetcher.state, fetcher.data]);
 
   const handleDeleteConfirm = () => {

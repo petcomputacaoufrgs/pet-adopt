@@ -65,33 +65,37 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
 
 
   useEffect(() => {
-    // Verificamos se o fetcher terminou de rodar (idle) e se tem dados
-    if (fetcher.state === 'idle' && fetcher.data) {
-      
-      // Acessando o retorno da Action
-      if (fetcher.data.success) {
-        showToast({ 
-          success: true,
-          message: "Pet excluído com sucesso!",
-          description: "O pet foi removido do sistema."
-        });
-        setModalAction(null); // Agora sim fechamos o modal
+    const id = window.setTimeout(() => {
+      // Verificamos se o fetcher terminou de rodar (idle) e se tem dados
+      if (fetcher.state === 'idle' && fetcher.data) {
+        
+        // Acessando o retorno da Action
+        if (fetcher.data.success) {
+          showToast({ 
+            success: true,
+            message: "Pet excluído com sucesso!",
+            description: "O pet foi removido do sistema."
+          });
+          setModalAction(null); // Agora sim fechamos o modal
 
-        fetcher.reset();
-      }  
-      
-      else if (fetcher.data.error) {
-        showToast({ 
-          success: false,
-          message: "Erro ao excluir pet.",
-          description: fetcher.data.error
-        });
+          fetcher.reset();
+        }  
+        
+        else if (fetcher.data.error) {
+          showToast({ 
+            success: false,
+            message: "Erro ao excluir pet.",
+            description: fetcher.data.error
+          });
 
-        setModalAction(null); // Fechamos o modal mesmo em caso de erro
+          setModalAction(null); // Fechamos o modal mesmo em caso de erro
 
-        fetcher.reset();
+          fetcher.reset();
+        }
       }
-    }
+    }, 0);
+
+    return () => window.clearTimeout(id);
   }, [fetcher.state, fetcher.data]);
 
 

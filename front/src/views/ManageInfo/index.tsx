@@ -33,28 +33,32 @@ const ManageInfo: React.FC = () => {
 
   // Efeito para lidar com a resposta do backend
   useEffect(() => {
-    if (fetcher.state === 'idle' && fetcher.data) {
-      if (fetcher.data.success) {
-        showToast({
-          success: true,
-          message: "Dados atualizados!",
-          description: "Informações atualizadas com sucesso."
-        });
+    const id = window.setTimeout(() => {
+      if (fetcher.state === 'idle' && fetcher.data) {
+        if (fetcher.data.success) {
+          showToast({
+            success: true,
+            message: "Dados atualizados!",
+            description: "Informações atualizadas com sucesso."
+          });
 
-       setApiError(null); // Limpa erros anteriores
+         setApiError(null); // Limpa erros anteriores
 
-       fetcher.reset();
+         fetcher.reset();
 
-      } else if (fetcher.data.error) {
-        showToast({
-          success: false,
-          message: "Erro ao atualizar dados",
-          description: fetcher.data.error
-        });
+        } else if (fetcher.data.error) {
+          showToast({
+            success: false,
+            message: "Erro ao atualizar dados",
+            description: fetcher.data.error
+          });
 
-       fetcher.reset();
+         fetcher.reset();
+        }
       }
-    }
+    }, 0);
+
+    return () => window.clearTimeout(id);
   }, [fetcher.state, fetcher.data]);
 
 
@@ -112,9 +116,13 @@ const ManageInfo: React.FC = () => {
 
 
   useEffect(() => {
-    if (fetcher.data?.error) {
-      setApiError(fetcher.data.error);
-    }
+    const id = window.setTimeout(() => {
+      if (fetcher.data?.error) {
+        setApiError(fetcher.data.error);
+      }
+    }, 0);
+
+    return () => window.clearTimeout(id);
   }, [fetcher.data]);
 
   return (

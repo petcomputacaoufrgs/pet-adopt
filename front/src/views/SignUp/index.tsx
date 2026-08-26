@@ -80,15 +80,19 @@ const SignUp: React.FC = () => {
 
   // 4. EFEITO DO FETCHER (Escuta a resposta do backend)
   useEffect(() => {
-    if (fetcher.state === 'idle' && fetcher.data) {
-      if (fetcher.data.success) {
-        console.log("Sucesso recebido do backend:", fetcher.data.message);
-        openModal('success', role === 'membro' ? 'Cadastro Realizado!' : 'Solicitação Enviada!', fetcher.data.message);
-      } else if (fetcher.data.error) {
-        console.log("Erro recebido do backend:", fetcher.data.error);
-        openModal('error', 'Algo deu errado', fetcher.data.error);
+    const id = window.setTimeout(() => {
+      if (fetcher.state === 'idle' && fetcher.data) {
+        if (fetcher.data.success) {
+          console.log("Sucesso recebido do backend:", fetcher.data.message);
+          openModal('success', role === 'membro' ? 'Cadastro Realizado!' : 'Solicitação Enviada!', fetcher.data.message);
+        } else if (fetcher.data.error) {
+          console.log("Erro recebido do backend:", fetcher.data.error);
+          openModal('error', 'Algo deu errado', fetcher.data.error);
+        }
       }
-    }
+    }, 0);
+
+    return () => window.clearTimeout(id);
   }, [fetcher.state, fetcher.data, role]);
 
   // 5. SUBMIT

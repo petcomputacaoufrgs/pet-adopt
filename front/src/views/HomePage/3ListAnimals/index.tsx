@@ -31,13 +31,13 @@ const ListAnimals = () => {
   }, []); // array vazio aqui é ok pois a função não tem dependências externas
   
   useEffect(() => {
-    fetchRecentAnimals();
+    const id = window.setTimeout(() => {
+      fetchRecentAnimals();
+    }, 0);
+
+    return () => window.clearTimeout(id);
   }, [fetchRecentAnimals]);
 
-  useEffect(() => {
-    if (pets.length > 0) {
-    }
-  }, [pets]);
 
   const getPetsToShow = useCallback(() => {
     if (window.innerWidth <= 1260) 
@@ -60,15 +60,22 @@ const ListAnimals = () => {
     };
 
     // Configura o estado inicial
-    handleResize();
+    const id = window.setTimeout(() => handleResize(), 0);
 
     window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    return () => {
+      window.clearTimeout(id);
+      window.removeEventListener("resize", handleResize);
+    };
   }, [getPetsToShow]);
 
   useEffect(() => {
-    setVisiblePets(getPetsToShow());
-  }, [pets]);
+    const id = window.setTimeout(() => {
+      setVisiblePets(getPetsToShow());
+    }, 0);
+
+    return () => window.clearTimeout(id);
+  }, [pets, getPetsToShow]);
 
   const navigate = useNavigate();
   

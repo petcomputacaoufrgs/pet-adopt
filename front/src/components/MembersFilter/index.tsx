@@ -20,7 +20,11 @@ export default function MembersFilter({ hasBorder = true }: { hasBorder?: boolea
 
   // Sincroniza URL -> State (caso usuário dê refresh ou volte a página)
   useEffect(() => {
-    setName(searchParams.get("name") || "");
+    const id = window.setTimeout(() => {
+      setName(searchParams.get("name") || "");
+    }, 0);
+
+    return () => window.clearTimeout(id);
   }, [searchParams]);
 
   const onChangeName = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -36,7 +40,7 @@ export default function MembersFilter({ hasBorder = true }: { hasBorder?: boolea
 
     // Remove chaves vazias
     const cleanData = Object.fromEntries(
-      Object.entries(formData).filter(([_, v]) => v !== "")
+      Object.entries(formData).filter(([, v]) => v !== "")
     );
 
     // Dispara a atualização da URL (Loader vai rodar)

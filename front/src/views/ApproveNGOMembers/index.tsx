@@ -71,33 +71,37 @@ const ApproveNGOMembers = () => {
   };
 
  useEffect(() => {
-      if (fetcher.state === "idle" && fetcher.data) {
-        if (fetcher.data.success) {
-          const type = fetcher.data.type; // "aprovar" ou "recusar" (ou "delete")
+      const id = window.setTimeout(() => {
+        if (fetcher.state === "idle" && fetcher.data) {
+          if (fetcher.data.success) {
+           const type = fetcher.data.type; // "aprovar" ou "recusar" (ou "delete")
 
-          showToast({
-             success: true,
-             message: `Administrador ${type === "aprovar" ? "aprovado" : "recusado"}!`,
-              description: type === "aprovar"
-                ? "Você pode ver esse Administrador em Gerenciar Administradores."
-                : "O Administrador foi removido da sua lista de validação."
-          });
-          setModalAction(null); // Fecha modal
-          fetcher.reset();
+           showToast({
+              success: true,
+              message: `Administrador ${type === "aprovar" ? "aprovado" : "recusado"}!`,
+               description: type === "aprovar"
+                 ? "Você pode ver esse Administrador em Gerenciar Administradores."
+                 : "O Administrador foi removido da sua lista de validação."
+           });
+           setModalAction(null); // Fecha modal
+           fetcher.reset();
 
+          }
+
+           else if (fetcher.data.error) {
+           showToast({
+              success: false,
+              message: "Erro na operação.",
+              description: fetcher.data.error
+            });
+            setModalAction(null); // Fecha modal
+            fetcher.reset();
+
+          }
         }
+      }, 0);
 
-          else if (fetcher.data.error) {
-          showToast({
-             success: false,
-             message: "Erro na operação.",
-             description: fetcher.data.error
-          });
-          setModalAction(null); // Fecha modal
-          fetcher.reset();
-
-        }
-      }
+      return () => window.clearTimeout(id);
     }, [fetcher.state, fetcher.data]);
 
 

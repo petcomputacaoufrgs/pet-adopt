@@ -47,11 +47,15 @@ const ManageNgo = () => {
 
 
   useEffect(() => {
-    if (user?.role === "ADMIN") {
-      setShowDeleteButton(true);
-    } else {
-      setShowDeleteButton(false);
-    }
+    const id = window.setTimeout(() => {
+      if (user?.role === "ADMIN") {
+        setShowDeleteButton(true);
+      } else {
+        setShowDeleteButton(false);
+      }
+    }, 0);
+
+    return () => window.clearTimeout(id);
   }, [user]);
 
   /**
@@ -90,34 +94,38 @@ const ManageNgo = () => {
   
 // Monitora resposta da Action
   useEffect(() => {
-    if (fetcher.state === "idle" && fetcher.data) {
-      if (fetcher.data.success) {
+    const id = window.setTimeout(() => {
+      if (fetcher.state === "idle" && fetcher.data) {
+        if (fetcher.data.success) {
 
-        showToast({
-          success: true,
-          message: "ONG excluída com sucesso!",
-          description: "A ONG foi removida do sistema."
-        });
+          showToast({
+            success: true,
+            message: "ONG excluída com sucesso!",
+            description: "A ONG foi removida do sistema."
+          });
 
-        // Fecha modal e limpa estado
-        setModalType(null);
-        setNgoToDeleteId(null);
-        fetcher.reset();
+          // Fecha modal e limpa estado
+          setModalType(null);
+          setNgoToDeleteId(null);
+          fetcher.reset();
 
-      } else if (fetcher.data.error) {
+        } else if (fetcher.data.error) {
 
-        showToast({
-          success: false,
-          message: "Erro ao deletar ONG.",
-          description: fetcher.data.error
-        });
+          showToast({
+            success: false,
+            message: "Erro ao deletar ONG.",
+            description: fetcher.data.error
+          });
 
-        setModalType(null);
-        setNgoToDeleteId(null);
-        fetcher.reset();
-        
+          setModalType(null);
+          setNgoToDeleteId(null);
+          fetcher.reset();
+          
+        }
       }
-    }
+    }, 0);
+
+    return () => window.clearTimeout(id);
   }, [fetcher.state, fetcher.data]);
 
 

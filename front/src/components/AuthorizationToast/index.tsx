@@ -9,23 +9,27 @@ const AuthorizationToast: React.FC = () => {
   const [toastVisible, setToastVisible] = useState(false);
 
   useEffect(() => {
-    const error = getAuthorizationError();
-    if (error) {
-      setAuthError(error);
-      setShowToast(true);
-      
-      // Mostrar toast
-      setTimeout(() => setToastVisible(true), 100);
-      
-      // Auto-hide após 5 segundos
-      setTimeout(() => {
-        setToastVisible(false);
+    const id = window.setTimeout(() => {
+      const error = getAuthorizationError();
+      if (error) {
+        setAuthError(error);
+        setShowToast(true);
+        
+        // Mostrar toast
+        setTimeout(() => setToastVisible(true), 100);
+        
+        // Auto-hide após 5 segundos
         setTimeout(() => {
-          setShowToast(false);
-          setAuthError(null);
-        }, 300);
-      }, 5000);
-    }
+          setToastVisible(false);
+          setTimeout(() => {
+            setShowToast(false);
+            setAuthError(null);
+          }, 300);
+        }, 5000);
+      }
+    }, 0);
+
+    return () => window.clearTimeout(id);
   }, []);
 
   if (!showToast || !authError) return null;

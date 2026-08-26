@@ -59,37 +59,45 @@ export default function AnimalFormSection({
 
   // Fetch NGOs
   useEffect(() => {
-    const fetchNgoOptions = async () => {
-      try {
-        const response = await ngoService.getApproved();
-        const mapped = response.data.map((ngo: any) => ({
-            id: ngo._id || ngo.id,
-            name: ngo.name,
-            email: ngo.email,
-            city: ngo.city,
-            state: ngo.state
-        }));
-        setNgoOptions(mapped);
-      } catch (error) { console.error(error); }
-    };
-    fetchNgoOptions();
+    const id = window.setTimeout(() => {
+      const fetchNgoOptions = async () => {
+        try {
+          const response = await ngoService.getApproved();
+          const mapped = response.data.map((ngo: any) => ({
+              id: ngo._id || ngo.id,
+              name: ngo.name,
+              email: ngo.email,
+              city: ngo.city,
+              state: ngo.state
+          }));
+          setNgoOptions(mapped);
+        } catch (error) { console.error(error); }
+      };
+      fetchNgoOptions();
+    }, 0);
+
+    return () => window.clearTimeout(id);
   }, []);
 
   // Lógica de Preenchimento Automático p/ Admin de ONG
   useEffect(() => {
-    if (ngoOptions.length > 0 && user && (user.role === 'NGO_ADMIN' || user.role === "NGO_MEMBER") && user.ngoId) {
-      const userNgo = ngoOptions.find(ngo => ngo.id === user.ngoId);
-      if (userNgo) {
-        const formatted = `${userNgo.name} - ${userNgo.email}`;
-        if (currentNgoStrId !== formatted) {
-           setValue("ngoStrId", formatted);
-        }
-        if (!currentCity && !currentState) {
-           setValue("city", userNgo.city || "");
-           setValue("state", userNgo.state || "");
+    const id = window.setTimeout(() => {
+      if (ngoOptions.length > 0 && user && (user.role === 'NGO_ADMIN' || user.role === "NGO_MEMBER") && user.ngoId) {
+        const userNgo = ngoOptions.find(ngo => ngo.id === user.ngoId);
+        if (userNgo) {
+          const formatted = `${userNgo.name} - ${userNgo.email}`;
+          if (currentNgoStrId !== formatted) {
+             setValue("ngoStrId", formatted);
+          }
+          if (!currentCity && !currentState) {
+             setValue("city", userNgo.city || "");
+             setValue("state", userNgo.state || "");
+          }
         }
       }
-    }
+    }, 0);
+
+    return () => window.clearTimeout(id);
   }, [user, ngoOptions, setValue, currentNgoStrId, currentCity, currentState]);
 
 

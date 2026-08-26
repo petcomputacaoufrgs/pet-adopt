@@ -68,64 +68,68 @@ const NgoProfile = () => {
 
 // Escuta a resposta da Action Factory (createCrudAction)
     useEffect(() => {
-        if (fetcher.state === 'idle' && fetcher.data) {
-            
-            // Tratamento de Erro vindo da Action
-            if (fetcher.data.error) {
-                showToast({
-                    success: false,
-                    message: "Erro na operação",
-                    description: fetcher.data.error
-                });
-                setModalType(null); // Fecha o modal mesmo com erro
-                return;
-            }
+        const idTimer = window.setTimeout(() => {
+          if (fetcher.state === 'idle' && fetcher.data) {
+              
+              // Tratamento de Erro vindo da Action
+              if (fetcher.data.error) {
+                  showToast({
+                      success: false,
+                      message: "Erro na operação",
+                      description: fetcher.data.error
+                  });
+                  setModalType(null); // Fecha o modal mesmo com erro
+                  return;
+              }
 
-            // Tratamento de Sucesso
-            if (fetcher.data.success) {
-                setModalType(null); // Fecha o modal
+              // Tratamento de Sucesso
+              if (fetcher.data.success) {
+                  setModalType(null); // Fecha o modal
 
-                switch (fetcher.data.type) {
-                    case 'aprovar':
-                        showToast({
-                            success: true,
-                            message: "ONG aprovada!",
-                            description: "A ONG agora está ativa no sistema."
-                        });
+                  switch (fetcher.data.type) {
+                      case 'aprovar':
+                          showToast({
+                              success: true,
+                              message: "ONG aprovada!",
+                              description: "A ONG agora está ativa no sistema."
+                          });
 
-                        fetcher.reset();
-                        break;
+                          fetcher.reset();
+                          break;
 
-                    case 'recusar':
-                        showToast({
-                            success: true,
-                            message: "ONG recusada.",
-                            description: "A solicitação foi removida."
-                        });
+                      case 'recusar':
+                          showToast({
+                              success: true,
+                              message: "ONG recusada.",
+                              description: "A solicitação foi removida."
+                          });
 
-                        fetcher.reset();
-                        navigate('/approveNgo'); // Redireciona após recusar
-                        break;
+                          fetcher.reset();
+                          navigate('/approveNgo'); // Redireciona após recusar
+                          break;
 
-                    case 'delete': // "delete" é o intent que sua factory retorna
-                        showToast({
-                            success: true,
-                            message: "ONG excluída.",
-                            description: "Registro removido com sucesso."
-                        });
-                        
-                        fetcher.reset();
-                        
-                        // Lógica especial de Logout se o usuário deletou a própria ONG
-                        if (user && id === user.ngoId) {
-                            logout();
-                        } else {
-                            navigate('/listNGOs'); // Ou para onde quiser voltar
-                        }
-                        break;
-                }
-            }
-        }
+                      case 'delete': // "delete" é o intent que sua factory retorna
+                          showToast({
+                              success: true,
+                              message: "ONG excluída.",
+                              description: "Registro removido com sucesso."
+                          });
+                          
+                          fetcher.reset();
+                          
+                          // Lógica especial de Logout se o usuário deletou a própria ONG
+                          if (user && id === user.ngoId) {
+                              logout();
+                          } else {
+                              navigate('/listNGOs'); // Ou para onde quiser voltar
+                          }
+                          break;
+                  }
+              }
+          }
+        }, 0);
+
+        return () => window.clearTimeout(idTimer);
     }, [fetcher.state, fetcher.data, navigate, showToast, user, id, logout]);
 
     // 5. HANDLER ÚNICO

@@ -70,32 +70,36 @@ const ApproveNGO = () => {
 
 
   useEffect(() => {
-      if (fetcher.state === "idle" && fetcher.data) {
-        if (fetcher.data.success) {
-          const type = fetcher.data.type; // "aprovar" ou "recusar" (ou "delete")
-          
-          showToast({
-             success: true,
-             message: `ONG ${type === "aprovar" ? "aprovada" : "recusada"}!`,
-             description: type === "aprovar" 
-               ? "Você pode ver essa ONG em Gerenciar ONGs." 
-               : "A ONG foi removida da lista."
-          });
-             
-          setModalAction(null); // Fecha modal
-          fetcher.reset();
-  
-        } else if (fetcher.data.error) {
-          showToast({
-             success: false,
-             message: "Erro na operação.",
-             description: fetcher.data.error
-          });
+      const id = window.setTimeout(() => {
+        if (fetcher.state === "idle" && fetcher.data) {
+          if (fetcher.data.success) {
+           const type = fetcher.data.type; // "aprovar" ou "recusar" (ou "delete")
+            
+           showToast({
+              success: true,
+              message: `ONG ${type === "aprovar" ? "aprovada" : "recusada"}!`,
+              description: type === "aprovar" 
+                ? "Você pode ver essa ONG em Gerenciar ONGs." 
+                : "A ONG foi removida da lista."
+           });
+               
+           setModalAction(null); // Fecha modal
+           fetcher.reset();
+    
+          } else if (fetcher.data.error) {
+           showToast({
+              success: false,
+              message: "Erro na operação.",
+              description: fetcher.data.error
+            });
 
-          setModalAction(null); // Fecha modal
-          fetcher.reset();
+           setModalAction(null); // Fecha modal
+           fetcher.reset();
+          }
         }
-      }
+      }, 0);
+
+      return () => window.clearTimeout(id);
     }, [fetcher.state, fetcher.data]);
   
 
