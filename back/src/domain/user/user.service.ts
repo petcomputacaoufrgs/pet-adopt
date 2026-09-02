@@ -220,11 +220,15 @@ export class UserService {
       );
     }
 
-    const userUpdated = await this.userModel.findByIdAndUpdate(
-      id,
-      updateUserDto,
-      { new: true, session },
-    );
+    const updateData = {
+      ...(updateUserDto.name !== undefined && { name: updateUserDto.name }),
+      ...(updateUserDto.email !== undefined && { email: updateUserDto.email }),
+    };
+    const userUpdated = await this.userModel.findByIdAndUpdate(id, updateData, {
+      new: true,
+      session,
+      runValidators: true,
+    });
     return userUpdated;
   }
 

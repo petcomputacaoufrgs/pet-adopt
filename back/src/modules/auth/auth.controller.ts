@@ -25,6 +25,8 @@ import { HasContactPipe } from 'src/core/pipes/has-contact.pipe';
 import { Throttle } from '@nestjs/throttler';
 import { Roles } from 'src/core/decorators/roles.decorator';
 import { Role } from 'src/core/enums/role.enum';
+import { SelfOrNgoOwnershipGuard } from 'src/core/guards/self-or-ngo-ownership.guard';
+import { SelfOrNgoOwnership } from 'src/core/decorators/self-or-ngo-ownership.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -120,7 +122,13 @@ export class AuthController {
   }
 
   @Patch(':userId')
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard, SelfOrNgoOwnershipGuard)
+  @Roles(Role.NGO_ADMIN)
+  @SelfOrNgoOwnership({
+    userIdParam: 'userId',
+    allowSelf: true,
+    allowNgoOwnership: false,
+  })
   async updateNgoInfo(
     @Param('userId') userId: string,
     @Body() updateData: UpdateNgoDto,
