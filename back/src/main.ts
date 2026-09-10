@@ -32,7 +32,9 @@ async function bootstrap() {
     frontendUrl,
     'http://localhost:5173',
     'http://localhost:3000',
+    'http://localhost',
     'http://127.0.0.1:5173',
+    'http://127.0.0.1',
   ];
   const port = configService.get<string>('PORT') || '3002';
 

@@ -66,11 +66,16 @@ export class SignupService {
 
   // Signup para membro de ONG
   async signupNgoMember(signupDto: NgoMemberDto): Promise<any> {
-    const ngo = await this.ngoService.getById(signupDto.ngoId);
-    if (!ngo) {
-      throw new HttpException('ONG não encontrada', HttpStatus.NOT_FOUND);
+    if (signupDto.ngoId) {
+      const ngo = await this.ngoService.getById(signupDto.ngoId);
+      if (!ngo) {
+        throw new HttpException('ONG não encontrada', HttpStatus.NOT_FOUND);
+      }
+
+      return this.createUser(signupDto, Role.NGO_MEMBER_PENDING);
     }
-    return this.createUser(signupDto, Role.NGO_MEMBER_PENDING);
+
+    return this.createUser(signupDto, Role.NGO_MEMBER);
   }
 
   // Signup para conta institucional de ONG (transacional)

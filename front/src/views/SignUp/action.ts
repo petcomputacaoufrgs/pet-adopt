@@ -15,12 +15,14 @@ export const signUpAction = async ({ request }: { request: Request }) => {
         email: data.email,
         password: data.password,
         confirmPassword: data.confirmPassword,
-        ngoId: data.ngoId // O ID que encontramos na lista do Loader
+        ngoId: data.ngoId || undefined
       });
 
       return { 
         success: true, 
-        message: "Seu pedido foi enviado para a aprovação do administrador da ONG." 
+        message: data.ngoId
+          ? "Seu pedido foi enviado para a aprovação do administrador da ONG."
+          : "Sua conta de membro foi criada com sucesso."
       };
     }
 

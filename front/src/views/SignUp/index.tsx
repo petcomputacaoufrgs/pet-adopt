@@ -114,12 +114,6 @@ const SignUp: React.FC = () => {
 
     // Pega o ID da ONG pelo texto do SearchBar
     const selectedNgo = ngoOptions.find(ngo => ngo.label === data.ngoSearchText);
-    if (role === 'membro' && !selectedNgo) {
-      setError("ngoSearchText", { type: "manual", message: "Selecione uma ONG válida da lista" });
-      openModal('error', 'Atenção', 'Selecione uma ONG válida da lista');
-      return;
-    }
-
     // Dispara para a Action
     const payload = { intent: role === "membro" ? "signup_member" : "signup_ngo", ngoId: selectedNgo?.id, ...data };
     fetcher.submit(payload, { method: "post", encType: "application/json", action: "/signup" });
@@ -391,21 +385,20 @@ const SignUp: React.FC = () => {
                 <Controller
                   name="ngoSearchText"
                   control={control}
-                  rules={{ required: "Selecione uma ONG" }}
                   render={({ field, fieldState }) => (
                     <SearchBar 
                       {...field} 
                       query={field.value} 
                       setQuery={field.onChange} 
                       options={ngoOptions.map(n => n.label)} 
-                      title="Selecione sua ONG" 
-                      required 
+                      title="ONG (opcional)"
+                      required={false}
                       resetOption="Limpar Seleção" 
                       width="100%" 
                       listMaxHeight="200px" 
                       error={!!fieldState.error} 
                       errorMessage={fieldState.error?.message} 
-                      placeholder="Encontre e selecione sua ONG aqui" 
+                      placeholder="Encontre e selecione sua ONG aqui (opcional)"
                       fontSize="1rem"
                     />
                   )}

@@ -60,8 +60,8 @@ const Login: React.FC = () => {
       
       setSuccessMessage("Login realizado com sucesso!");
       
-      // Redirecionar para a home após login bem-sucedido
-      navigate('/', { replace: true });
+      // Recarregar a rota raiz para que o Header leia a sessão recém-criada.
+      window.location.replace('/');
       
     } catch (err: any) {
       if (err.response?.status === 401) {

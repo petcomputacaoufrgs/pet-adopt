@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsString, MaxLength } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
 import { Role } from '../../../core/enums/role.enum';
 
 // Interface interna para criação de usuários com todos os campos necessários
@@ -35,7 +35,7 @@ export class BasicUserDto {
 
 // ngo-member.dto.ts (para NGO_MEMBER)
 export class NgoMemberDto extends BasicUserDto {
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
-  ngoId: string;
+  ngoId?: string;
 }

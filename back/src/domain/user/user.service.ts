@@ -79,14 +79,25 @@ export class UserService {
   }
 
   async create(createUserDto: UserData, session?: any) {
-    // Validação: se é role de NGO, deve ter ngoId
-    const ngoRoles = [Role.NGO_MEMBER_PENDING, Role.NGO_ADMIN_PENDING];
-    if (ngoRoles.includes(createUserDto.role) && !createUserDto.ngoId) {
+    // Apenas contas pendentes dependem de uma ONG para aprovação.
+    const ngoRolesRequiringAssociation = [
+      Role.NGO_MEMBER_PENDING,
+      Role.NGO_ADMIN_PENDING,
+    ];
+    if (
+      ngoRolesRequiringAssociation.includes(createUserDto.role) &&
+      !createUserDto.ngoId
+    ) {
       throw new Error('ngoId é obrigatório para usuários de ONG');
     }
 
-    // Validação: deve ser admin, ngo_admin_pending ou ngo_member_pending
-    const validRoles = [Role.ADMIN, ...ngoRoles];
+    // Membros independentes podem existir sem vínculo com uma ONG.
+    const validRoles = [
+      Role.ADMIN,
+      Role.NGO_MEMBER,
+      Role.NGO_MEMBER_PENDING,
+      Role.NGO_ADMIN_PENDING,
+    ];
     if (!validRoles.includes(createUserDto.role)) {
       throw new Error('Role inválida para criação de usuário');
     }
