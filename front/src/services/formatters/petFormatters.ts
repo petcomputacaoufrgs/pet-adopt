@@ -32,7 +32,7 @@ export const formatSize = (size: string): string => {
 /**
  * Formata string genérica para exibição
  */
-export const formatString = (str?: any): string => {
+export const formatString = (str?: unknown): string => {
   if (str === undefined || str === null) return "";
   const clean = String(str).replace(/['"]/g, "").trim();
   return clean.charAt(0).toUpperCase() + clean.slice(1);
@@ -85,7 +85,13 @@ const ageMapBackend: Record<string, string> = {
 const mapAgeToBackend = (ageStr: string): string => ageMapBackend[ageStr] || ageStr;
 
 
-const resolveNgoId = (ngoStrId: string, ngoOptions: any[]) => {
+interface NgoOption {
+  id: string;
+  name: string;
+  email: string;
+}
+
+const resolveNgoId = (ngoStrId: string, ngoOptions: NgoOption[]) => {
   const selectedNgo = ngoOptions.find(n => `${n.name} - ${n.email}` === ngoStrId);
   if (!selectedNgo) throw new Error("ONG inválida selecionada");
   return selectedNgo.id;
@@ -95,7 +101,7 @@ const resolveNgoId = (ngoStrId: string, ngoOptions: any[]) => {
 
 export const buildAnimalFormData = (
   data: AnimalFormSchema, 
-  ngoOptions: any[], 
+  ngoOptions: NgoOption[],
 ): FormData => {
   const formData = new FormData();
 
@@ -140,5 +146,4 @@ export const buildAnimalFormData = (
 
   return formData;
 };
-
 

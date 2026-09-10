@@ -83,10 +83,8 @@ const SignUp: React.FC = () => {
     const id = window.setTimeout(() => {
       if (fetcher.state === 'idle' && fetcher.data) {
         if (fetcher.data.success) {
-          console.log("Sucesso recebido do backend:", fetcher.data.message);
           openModal('success', role === 'membro' ? 'Cadastro Realizado!' : 'Solicitação Enviada!', fetcher.data.message);
         } else if (fetcher.data.error) {
-          console.log("Erro recebido do backend:", fetcher.data.error);
           openModal('error', 'Algo deu errado', fetcher.data.error);
         }
       }

@@ -19,8 +19,6 @@ const ImageSlot = memo(({ source, onClick, onRemove, isCover }: ImageSlotProps) 
 
     if (typeof source === 'string') {
 
-      const fullUrl = imageHelper.getFullImageUrl(source);
-      console.log("URL completa da imagem:", fullUrl);
       return imageHelper.getFullImageUrl(source);
     } else {
       return URL.createObjectURL(source);

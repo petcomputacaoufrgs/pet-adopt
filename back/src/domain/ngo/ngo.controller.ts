@@ -18,6 +18,7 @@ import { Roles } from 'src/core/decorators/roles.decorator';
 import { Role } from 'src/core/enums/role.enum';
 import { NgoOwnershipGuard } from 'src/core/guards/ngo-ownership.guard';
 import { NgoOwnership } from 'src/core/decorators/ngo-ownership.decorator';
+import { NgoQueryDto } from './dtos/ngo-query.dto';
 
 @ApiTags('ngos')
 @Controller('ngos')
@@ -25,12 +26,12 @@ export class NgoController {
   constructor(private ngoService: NgoService) {}
 
   @Get()
-  getAll(@Query() query: any) {
+  getAll(@Query() query: NgoQueryDto) {
     return this.ngoService.getApproved(query);
   }
 
   @Get('/page')
-  getApprovedPage(@Query() query: any) {
+  getApprovedPage(@Query() query: NgoQueryDto) {
     return this.ngoService.getPage(query, true);
   }
 
@@ -44,7 +45,7 @@ export class NgoController {
   @Get('/unapproved/page')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.ADMIN)
-  getUnapprovedPage(@Query() query: any) {
+  getUnapprovedPage(@Query() query: NgoQueryDto) {
     return this.ngoService.getPage(query, false);
   }
 

@@ -8,6 +8,9 @@ export interface PetFilters {
   age?: string;
   size?: string;
   situation?: string;
+  page?: number;
+  limit?: number;
+  ngoId?: string;
 }
 
 
@@ -184,8 +187,8 @@ const toBackendSituation = (situation: string) => {
 
 
 // --- A FUNÇÃO MÁGICA EXPORTADA ---
-export const normalizeFiltersForApi = (frontFilters: any) => {
-  const apiFilters: any = {};
+export const normalizeFiltersForApi = (frontFilters: PetFilters) => {
+  const apiFilters: Record<string, string | number> = {};
 
   apiFilters.page = frontFilters.page || 1;
   apiFilters.limit = frontFilters.limit || 12;

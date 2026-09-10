@@ -16,7 +16,7 @@ interface BackendResponse<T> {
 interface LoaderConfig<T> {
   // A função que busca os dados.
   // user: Passamos o usuário inteiro para você decidir se usa ngoId, role, ou nada (public)
-  fetchData: (filters: any, user: any | null) => Promise<{ data: BackendResponse<T> }>;
+  fetchData: (filters: Record<string, string | number>, user: UserData | null) => Promise<{ data: BackendResponse<T> }>;
   
   // Quais filtros a URL deve "escutar". Ex: ['specie', 'size'] para pets
   filterKeys?: string[];
@@ -31,15 +31,21 @@ interface LoaderConfig<T> {
   forbiddenRedirect?: string;
 }
 
+interface UserData {
+  _id: string;
+  ngoId?: string;
+  role?: string;
+}
+
 // --- LOADER FACTORY ---
-export const createPaginatedLoader = <T>(config: LoaderConfig<T>) => 
+export const createPaginatedLoader = <T extends { _id?: string; id?: string }>(config: LoaderConfig<T>) =>
   async ({ request }: { request: Request }) => {
     const url = new URL(request.url);
     const page = Number(url.searchParams.get("page")) || 1;
-    const limit = Number(url.searchParams.get("limit")) || 6; // Ou leia da URL
+    const limit = Math.min(100, Math.max(1, Number(url.searchParams.get("limit")) || 6));
 
     // 1. Monta Filtros
-    const filters: any = { page, limit };
+    const filters: Record<string, string | number> = { page, limit };
     (config.filterKeys || []).forEach(key => {
       const value = url.searchParams.get(key);
       if (value && value !== "Qualquer") filters[key] = value;
@@ -69,7 +75,7 @@ export const createPaginatedLoader = <T>(config: LoaderConfig<T>) =>
       const meta = result.meta;
 
       // Normaliza ID
-      const items = rawItems.map((item: any) => ({
+      const items = rawItems.map((item) => ({
         ...item,
         _id: item._id || item.id, 
       }));
@@ -86,11 +92,11 @@ export const createPaginatedLoader = <T>(config: LoaderConfig<T>) =>
 
       return { items, user, meta };
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Loader Error:", error);
       
       // Tratamento específico para erro 403 (Forbidden)
-      if (error.response?.status === 403) {
+      if (error instanceof AxiosError && error.response?.status === 403) {
         const redirectPath = config.forbiddenRedirect || '/';
         localStorage.setItem('authorizationError', 
           error.response?.data?.message || 'Você não tem permissão para acessar este recurso.');
@@ -104,8 +110,8 @@ export const createPaginatedLoader = <T>(config: LoaderConfig<T>) =>
 // --- ACTION FACTORY ---
 interface ActionConfig {
   // Recebe o ID e executa a lógica
-  deleteFn?: (id: string) => Promise<any>;
-  approveFn?: (id: string) => Promise<any>; // Para validações
+  deleteFn?: (id: string) => Promise<unknown>;
+  approveFn?: (id: string) => Promise<unknown>; // Para validações
   // Para onde redirecionar em caso de erro 403 (opcional, se não definido apenas retorna erro)
   forbiddenRedirect?: string;
 }

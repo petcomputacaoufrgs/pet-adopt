@@ -22,6 +22,7 @@ import { NgoOwnershipGuard } from 'src/core/guards/ngo-ownership.guard';
 import { NgoOwnership } from 'src/core/decorators/ngo-ownership.decorator';
 import { SelfOrNgoOwnershipGuard } from 'src/core/guards/self-or-ngo-ownership.guard';
 import { SelfOrNgoOwnership } from 'src/core/decorators/self-or-ngo-ownership.decorator';
+import { UserQueryDto } from './dtos/user-query.dto';
 
 @ApiTags('users')
 @Controller('users')
@@ -31,7 +32,7 @@ export class UserController {
   @Get()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.ADMIN)
-  getAll(@Query() query: any) {
+  getAll(@Query() query: UserQueryDto) {
     return this.userService.getAll(query);
   }
 
@@ -39,7 +40,7 @@ export class UserController {
   @UseGuards(JwtAuthGuard, RolesGuard, NgoOwnershipGuard)
   @Roles(Role.ADMIN, Role.NGO_ADMIN)
   @NgoOwnership({ resourceIdParam: 'ngoId', paramIsNgoId: true })
-  getUnapprovedMembers(@Param('ngoId') ngoId: string, @Query() query: any) {
+  getUnapprovedMembers(@Param('ngoId') ngoId: string, @Query() query: UserQueryDto) {
     return this.userService.getUnapprovedMembers(ngoId, query);
   }
 
@@ -47,7 +48,7 @@ export class UserController {
   @UseGuards(JwtAuthGuard, RolesGuard, NgoOwnershipGuard)
   @Roles(Role.ADMIN, Role.NGO_ADMIN)
   @NgoOwnership({ resourceIdParam: 'ngoId', paramIsNgoId: true })
-  getApprovedMembers(@Param('ngoId') ngoId: string, @Query() query: any) {
+  getApprovedMembers(@Param('ngoId') ngoId: string, @Query() query: UserQueryDto) {
     return this.userService.getApprovedMembers(ngoId, query);
   }
 
@@ -55,7 +56,7 @@ export class UserController {
   @UseGuards(JwtAuthGuard, RolesGuard, NgoOwnershipGuard)
   @Roles(Role.ADMIN, Role.NGO_ADMIN)
   @NgoOwnership({ resourceIdParam: 'ngoId', paramIsNgoId: true })
-  getApprovedMembersPage(@Param('ngoId') ngoId: string, @Query() query: any) {
+  getApprovedMembersPage(@Param('ngoId') ngoId: string, @Query() query: UserQueryDto) {
     return this.userService.getPage(ngoId, query, true);
   }
 
@@ -63,7 +64,7 @@ export class UserController {
   @UseGuards(JwtAuthGuard, RolesGuard, NgoOwnershipGuard)
   @Roles(Role.ADMIN, Role.NGO_ADMIN)
   @NgoOwnership({ resourceIdParam: 'ngoId', paramIsNgoId: true })
-  getUnapprovedMembersPage(@Param('ngoId') ngoId: string, @Query() query: any) {
+  getUnapprovedMembersPage(@Param('ngoId') ngoId: string, @Query() query: UserQueryDto) {
     return this.userService.getPage(ngoId, query, false);
   }
 

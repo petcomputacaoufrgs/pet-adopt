@@ -7,6 +7,8 @@ import { UpdateNgoDto } from './dtos/update-ngo.dto';
 import { UserService } from '../user/user.service';
 import { PetService } from '../pet/pet.service';
 import { Role } from 'src/core/enums/role.enum';
+import { NgoQueryDto } from './dtos/ngo-query.dto';
+import { MAX_PAGE_SIZE } from 'src/core/dtos/pagination-query.dto';
 
 @Injectable()
 export class NgoService {
@@ -16,27 +18,29 @@ export class NgoService {
     private petService: PetService,
   ) {}
 
-  async getAll(filters: any = {}) {
+  async getAll(filters: NgoQueryDto = new NgoQueryDto()) {
+    const { page: _page, limit: _limit, ...searchFilters } = filters;
     // Remove empty filters
-    Object.keys(filters).forEach((key) => {
-      if (!filters[key]) delete filters[key];
-      if (typeof filters[key] === 'string')
-        filters[key] = filters[key]
+    Object.keys(searchFilters).forEach((key) => {
+      if (!searchFilters[key]) delete searchFilters[key];
+      if (typeof searchFilters[key] === 'string')
+        searchFilters[key] = searchFilters[key]
           .replace(/^"+|"+$/g, '')
           .replace(/^'+|'+$/g, '');
     });
 
-    const ngos = await this.ngoModel.find(filters);
+    const ngos = await this.ngoModel.find(searchFilters);
 
     return ngos;
   }
 
-  async getApproved(filters: any = {}) {
+  async getApproved(filters: NgoQueryDto = new NgoQueryDto()) {
+    const { page: _page, limit: _limit, ...searchFilters } = filters;
     // Remove empty filters
-    Object.keys(filters).forEach((key) => {
-      if (!filters[key]) delete filters[key];
-      if (typeof filters[key] === 'string')
-        filters[key] = filters[key]
+    Object.keys(searchFilters).forEach((key) => {
+      if (!searchFilters[key]) delete searchFilters[key];
+      if (typeof searchFilters[key] === 'string')
+        searchFilters[key] = searchFilters[key]
           .replace(/^"+|"+$/g, '')
           .replace(/^'+|'+$/g, '');
     });
@@ -47,7 +51,7 @@ export class NgoService {
 
     // Combina o filtro de NGOs aprovadas com os filtros recebidos
     const combinedFilters = {
-      ...filters,
+      ...searchFilters,
       _id: { $in: ngoIds },
     };
 
@@ -63,10 +67,13 @@ export class NgoService {
     return await this.ngoModel.find({ _id: { $in: ngoIds } });
   }
 
-  async getPage(filters: any = {}, approved: boolean = true) {
+  async getPage(filters: NgoQueryDto = new NgoQueryDto(), approved = true) {
     // 1. Extrair paginação
-    const page = Number(filters.page) || 1;
-    const limit = Number(filters.limit) || 12;
+    const page = Math.max(1, Number(filters.page) || 1);
+    const limit = Math.min(
+      MAX_PAGE_SIZE,
+      Math.max(1, Number(filters.limit) || 12),
+    );
 
     // Removemos page/limit para não atrapalhar a limpeza de strings abaixo
     const restFilters = { ...filters };
@@ -163,9 +170,9 @@ export class NgoService {
         throw new NotFoundException('NGO not found.');
       }
 
-      // Deleta dependências primeiro (dentro da transação)
+      // Remove dependências first; physical files are cleaned up after commit.
       // 1. Deleta pets da ONG (e suas fotos)
-      await this.petService.deleteByNgoId(id, session);
+      const photosToDelete = await this.petService.deleteByNgoId(id, session);
 
       // 2. Deleta todos os usuários associados (admin + membros)
       await this.userService.deleteByNgoId(id, session);
@@ -175,6 +182,7 @@ export class NgoService {
 
       // Commit da transação - tudo ou nada
       await session.commitTransaction();
+      await this.petService.deletePhotoFiles(photosToDelete);
 
       return { message: 'NGO and associated data deleted successfully.' };
     } catch (error) {

@@ -14,12 +14,12 @@ const api = axios.create({
 // Variável para controlar se já estamos fazendo refresh
 let isRefreshing = false;
 let failedQueue: Array<{
-  resolve: (value?: any) => void;
-  reject: (reason?: any) => void;
+  resolve: (value?: boolean) => void;
+  reject: (reason?: unknown) => void;
 }> = [];
 
 // Função para processar a fila de requisições que falharam
-const processQueue = (error: any, success: boolean = false) => {
+const processQueue = (error: unknown, success = false) => {
   failedQueue.forEach(({ resolve, reject }) => {
     if (error) {
       reject(error);

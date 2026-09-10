@@ -12,6 +12,8 @@ import { Species } from 'src/core/enums/species.enum';
 import { StatisticsService } from '../statistics/statistics.service';
 import * as fs from 'fs/promises';
 import * as path from 'path';
+import { PetFilters, PetQueryDto } from './dtos/pet-query.dto';
+import { MAX_PAGE_SIZE } from 'src/core/dtos/pagination-query.dto';
 
 @Injectable()
 export class PetService {
@@ -20,25 +22,25 @@ export class PetService {
     private statisticsService: StatisticsService,
   ) {}
 
-  async getAll(filters: any = {}) {
+  async getAll(filters: PetQueryDto = new PetQueryDto()) {
+    const { page: _page, limit: _limit, ...searchFilters } = filters;
     // Remove filtros vazios
-    Object.keys(filters).forEach((key) => {
-      if (!filters[key]) delete filters[key];
+    Object.keys(searchFilters).forEach((key) => {
+      if (!searchFilters[key]) delete searchFilters[key];
     });
 
     // Ajuste para species (exemplo: capitalize)
     if (filters.species) {
-      filters.species = filters.species.toLowerCase();
+      searchFilters.species = searchFilters.species;
     }
 
-    if (filters.size) filters.size = filters.size.toUpperCase();
+    if (searchFilters.size) searchFilters.size = searchFilters.size.toUpperCase();
 
-    const pets = await this.petModel.find(filters);
+    const pets = await this.petModel.find(searchFilters);
     return pets;
   }
 
-  async getPage(filters: any = {}, page: number = 1, limit: number = 12) {
-    console.log('Received filters:', filters);
+  async getPage(filters: PetFilters = {}, page = 1, limit = 12) {
 
     // Remove filtros vazios
     Object.keys(filters).forEach((key) => {
@@ -58,19 +60,20 @@ export class PetService {
     });
 
     // Os outros campos que já tinham padrão fixo
-    if (filters.species) filters.species = filters.species.toLowerCase();
+    if (filters.species) filters.species = filters.species;
     if (filters.size) filters.size = filters.size.toUpperCase();
 
     // Paginação
     const currentPage = Math.max(1, page);
-    const skip = (currentPage - 1) * limit;
+    const pageSize = Math.min(MAX_PAGE_SIZE, Math.max(1, limit));
+    const skip = (currentPage - 1) * pageSize;
 
     const [data, total] = await Promise.all([
-      this.petModel.find(filters).skip(skip).limit(limit).exec(),
+      this.petModel.find(filters).skip(skip).limit(pageSize).exec(),
       this.petModel.countDocuments(filters).exec(),
     ]);
 
-    const totalPages = Math.ceil(total / limit);
+    const totalPages = Math.ceil(total / pageSize);
 
     return {
       data,
@@ -78,7 +81,7 @@ export class PetService {
         total,
         page: currentPage,
         lastPage: totalPages,
-        limit: limit,
+        limit: pageSize,
       },
     };
   }
@@ -228,28 +231,26 @@ export class PetService {
     return { deleted: true, pet: deletedPet };
   }
 
-  async deleteByNgoId(ngoId: string, session?: any) {
-    // Busca todos os pets da ONG para deletar as fotos
+  async deleteByNgoId(ngoId: string, session?: any): Promise<string[]> {
+    // Capture paths while the transaction still has a consistent view.
     const petsToDelete = await this.petModel.find({ ngoId }).session(session);
 
     // Deleta os documentos do banco
     await this.petModel.deleteMany({ ngoId }).session(session);
 
-    // Deleta as fotos físicas de todos os pets
     const allPhotos = petsToDelete.flatMap((pet) => pet.photos || []);
-    if (allPhotos.length > 0) {
-      await this.deletePhotoFiles(allPhotos);
-    }
 
     // Remove os pets da coleção de estatísticas (recent pets)
     const petIds = petsToDelete.map((pet) => pet._id);
     for (const petId of petIds) {
       await this.statisticsService.removeRecentPet(petId);
     }
+
+    return allPhotos;
   }
 
-  // Método auxiliar para deletar arquivos de foto
-  private async deletePhotoFiles(photoPaths: string[]) {
+  // Called only after the owning database transaction has committed.
+  async deletePhotoFiles(photoPaths: string[]) {
     await Promise.all(
       photoPaths.map(async (photoPath) => {
         const localPath = path.join('./uploads', path.basename(photoPath));

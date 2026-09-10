@@ -17,13 +17,13 @@ export const authService = {
 
   logout: () => api.post('/auth/logout'),
   
-  signupNgoMember: (userData: any) => 
+  signupNgoMember: (userData: Record<string, unknown>) =>
     api.post('/auth/signup/ngo-member', userData),
   
-  signupNgo: (userData: any) => 
+  signupNgo: (userData: Record<string, unknown>) =>
     api.post('/auth/signup/ngo', userData),
 
-  updateNgo: (ngoId: string, ngoData: any) => 
+  updateNgo: (ngoId: string, ngoData: Record<string, unknown>) =>
     api.patch(`/auth/${ngoId}`, ngoData),
 
   requestPasswordReset: (email: string) => 
@@ -73,10 +73,8 @@ export const ngoService = {
   isApproved:(id: string) => 
     api.get(`/ngos/${id}/is-approved`),
 
-  update: (ngoId: string, ngoData: any) => {
-    console.log("Updating NGO ID:", ngoId, "with data:", ngoData);
-    return api.patch(`/ngos/${ngoId}`, ngoData);
-  }  
+  update: (ngoId: string, ngoData: Record<string, unknown>) =>
+    api.patch(`/ngos/${ngoId}`, ngoData),
 };
 
 // Serviços relacionados aos pets
@@ -162,7 +160,7 @@ export const userService = {
   delete: (memberId: string) => 
     api.delete(`/users/${memberId}`),
 
-  update: (userId: string, userData: any) => 
+  update: (userId: string, userData: Record<string, unknown>) =>
     api.patch(`/users/${userId}`, userData),
 };
 

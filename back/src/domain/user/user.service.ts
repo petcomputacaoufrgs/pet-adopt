@@ -1,12 +1,14 @@
 import { Injectable, Inject, forwardRef } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './schemas/user.schema';
-import { Model } from 'mongoose';
+import { FilterQuery, Model } from 'mongoose';
 import { UserData } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { Role } from 'src/core/enums/role.enum';
 import { NotFoundException, ForbiddenException } from '@nestjs/common';
 import { TokenService } from 'src/modules/auth/services/token.service';
+import { UserQueryDto } from './dtos/user-query.dto';
+import { MAX_PAGE_SIZE } from 'src/core/dtos/pagination-query.dto';
 
 @Injectable()
 export class UserService {
@@ -15,34 +17,38 @@ export class UserService {
     @Inject(forwardRef(() => TokenService)) private tokenService: TokenService,
   ) {}
 
-  async getAll(filters: any = {}) {
+  async getAll(filters: UserQueryDto = new UserQueryDto()) {
+    const { page: _page, limit: _limit, ...searchFilters } = filters;
     // Remove filtros vazios
-    Object.keys(filters).forEach((key) => {
-      if (!filters[key]) delete filters[key];
-      if (typeof filters[key] === 'string')
-        filters[key] = filters[key]
+    Object.keys(searchFilters).forEach((key) => {
+      if (!searchFilters[key]) delete searchFilters[key];
+      if (typeof searchFilters[key] === 'string')
+        searchFilters[key] = searchFilters[key]
           .replace(/^"+|"+$/g, '')
           .replace(/^'+|'+$/g, '');
     });
 
-    if (filters.role) filters.role = filters.role.toUpperCase();
+    if (searchFilters.role) searchFilters.role = searchFilters.role;
 
-    const users = await this.userModel.find(filters); // .populate('NGO');Popula o campo NGO se existir
+    const users = await this.userModel.find(searchFilters); // .populate('NGO');Popula o campo NGO se existir
 
     return users;
   }
 
-  async getPage(ngoId: string, filters: any = {}, approved: boolean = true) {
+  async getPage(ngoId: string, filters: UserQueryDto = new UserQueryDto(), approved = true) {
     // 1. Extrair paginação e separar dos filtros de busca
-    const page = Number(filters.page) || 1;
-    const limit = Number(filters.limit) || 12;
+    const page = Math.max(1, Number(filters.page) || 1);
+    const limit = Math.min(
+      MAX_PAGE_SIZE,
+      Math.max(1, Number(filters.limit) || 12),
+    );
 
     // Removemos page/limit do objeto filters para não quebrar a query do Mongoose
     const searchFilters = { ...filters };
     delete searchFilters.page;
     delete searchFilters.limit;
 
-    const query: any = {
+    const query: FilterQuery<User> = {
       ngoId,
       role: approved ? Role.NGO_MEMBER : Role.NGO_MEMBER_PENDING,
     };
@@ -150,17 +156,20 @@ export class UserService {
 
   async getUnapprovedMembers(
     ngoId: string,
-    filters: any = {},
+    filters: UserQueryDto = new UserQueryDto(),
   ): Promise<User[]> {
-    const query: any = { ngoId, role: Role.NGO_MEMBER_PENDING };
+    const query: FilterQuery<User> = { ngoId, role: Role.NGO_MEMBER_PENDING };
     if (filters.name) {
       query.name = { $regex: new RegExp(filters.name, 'i') };
     }
     return await this.userModel.find(query);
   }
 
-  async getApprovedMembers(ngoId: string, filters: any = {}): Promise<User[]> {
-    const query: any = { ngoId, role: Role.NGO_MEMBER };
+  async getApprovedMembers(
+    ngoId: string,
+    filters: UserQueryDto = new UserQueryDto(),
+  ): Promise<User[]> {
+    const query: FilterQuery<User> = { ngoId, role: Role.NGO_MEMBER };
 
     if (filters.name) {
       query.name = { $regex: new RegExp(filters.name, 'i') };

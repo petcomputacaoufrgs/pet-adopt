@@ -32,6 +32,7 @@ import { NgoOwnershipGuard } from 'src/core/guards/ngo-ownership.guard';
 import { Roles } from 'src/core/decorators/roles.decorator';
 import { NgoOwnership } from 'src/core/decorators/ngo-ownership.decorator';
 import { Role } from 'src/core/enums/role.enum';
+import { PetQueryDto } from './dtos/pet-query.dto';
 
 const MAX_PHOTOS = 10;
 
@@ -43,21 +44,16 @@ export class PetController {
   // Leitura pública - permite mais requisições
   @Throttle({ default: { limit: 30, ttl: 60000 } }) // 30 req/min
   @Get()
-  getAll(@Query() query: any) {
+  getAll(@Query() query: PetQueryDto) {
     return this.petService.getAll(query);
   }
 
   // TO DO: Aplicar paginação corretamente no front usando esse método aqui
   @Throttle({ default: { limit: 30, ttl: 60000 } }) // 30 req/min
   @Get('page')
-  getPage(@Query() query: any) {
-    const page = Number(query.page) || 1;
-    const limit = Number(query.limit) || 12;
-
-    delete query.page;
-    delete query.limit;
-
-    return this.petService.getPage(query, page, limit);
+  getPage(@Query() query: PetQueryDto) {
+    const { page, limit, ...filters } = query;
+    return this.petService.getPage(filters, page, limit);
   }
 
   @Throttle({ default: { limit: 30, ttl: 60000 } }) // 30 req/min
