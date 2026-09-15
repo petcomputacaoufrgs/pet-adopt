@@ -34,4 +34,4 @@ COPY --from=builder /app/dist ./dist
 # Expõe a porta 5173 (Padrão do Vite)
 EXPOSE 5173
 
-CMD ["serve", "-s", "dist", "-l", "5173"]
+CMD ["serve", "-s", "dist", "-l", "tcp://0.0.0.0:5173"]
