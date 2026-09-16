@@ -36,7 +36,12 @@ export class PetService {
 
     if (searchFilters.size) searchFilters.size = searchFilters.size.toUpperCase();
 
-    const pets = await this.petModel.find(searchFilters);
+    const queryFilters =
+      filters.species === Species.OTHER
+        ? { ...searchFilters, species: { $nin: [Species.DOG, Species.CAT] } }
+        : searchFilters;
+
+    const pets = await this.petModel.find(queryFilters);
     return pets;
   }
 
@@ -68,9 +73,14 @@ export class PetService {
     const pageSize = Math.min(MAX_PAGE_SIZE, Math.max(1, limit));
     const skip = (currentPage - 1) * pageSize;
 
+    const queryFilters =
+      filters.species === Species.OTHER
+        ? { ...filters, species: { $nin: [Species.DOG, Species.CAT] } }
+        : filters;
+
     const [data, total] = await Promise.all([
-      this.petModel.find(filters).skip(skip).limit(pageSize).exec(),
-      this.petModel.countDocuments(filters).exec(),
+      this.petModel.find(queryFilters).skip(skip).limit(pageSize).exec(),
+      this.petModel.countDocuments(queryFilters).exec(),
     ]);
 
     const totalPages = Math.ceil(total / pageSize);

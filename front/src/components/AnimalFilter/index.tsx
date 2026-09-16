@@ -46,7 +46,7 @@ export default function AnimalFilter({ hasBorder = true }) {
 
   
   // Inicializa lendo da URL e convertendo para índice (ou -1 se não achar)
-  const initialSpecieIndex = mapSpeciesStringToIndex(searchParams.get("specie") || "");
+  const initialSpecieIndex = mapSpeciesStringToIndex(searchParams.get("species") || "");
   const [selectedSpecie, setSelectedSpecie] = useState(initialSpecieIndex);
 
   
@@ -66,8 +66,8 @@ export default function AnimalFilter({ hasBorder = true }) {
       setSelectedSex(mapBackendToSex(searchParams.get("sex") || ""));
       setSelectedSituation(searchParams.get("situation") || "");
 
-      const specieParam = searchParams.get("species");
-      setSelectedSpecie(mapSpeciesStringToIndex(specieParam || ""));
+      const speciesParam = searchParams.get("species");
+      setSelectedSpecie(mapSpeciesStringToIndex(speciesParam || ""));
     }, 0);
 
     return () => window.clearTimeout(id);
