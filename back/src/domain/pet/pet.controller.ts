@@ -71,7 +71,7 @@ export class PetController {
   // Adicionar animal, usa interceptor para salvar fotos e pipe para validar quantidade e formato
   @Post()
   @UseGuards(JwtAuthGuard, RolesGuard, NgoOwnershipGuard)
-  @Roles(Role.ADMIN, Role.NGO_ADMIN, Role.NGO_MEMBER)
+  @Roles(...Object.values(Role))
   @NgoOwnership({ resourceIdBody: 'ngoId' })
   @UseInterceptors(
     FilesInterceptor('photos', MAX_PHOTOS, {

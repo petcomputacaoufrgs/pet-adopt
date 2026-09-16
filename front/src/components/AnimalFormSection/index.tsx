@@ -151,13 +151,12 @@ export default function AnimalFormSection({
     <Controller 
         name="ngoStrId"
         control={control}
-        rules={{ required: "ONG obrigatória" }}
         render={({ field }) => (
         <SearchBar
             query={field.value}
             setQuery={field.onChange}
             title="Selecione a ONG"
-            required
+            required={false}
             options={ngoOptions.map(ngo => `${ngo.name} - ${ngo.email}`)}
             readOnly={isNgoAdmin}
             disabled={isNgoAdmin}

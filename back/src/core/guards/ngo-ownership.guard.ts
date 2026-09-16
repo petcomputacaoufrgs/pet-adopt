@@ -47,14 +47,19 @@ export class NgoOwnershipGuard implements CanActivate {
       return true;
     }
 
+    const resourceNgoId = this.extractResourceNgoId(request, config);
+
+    // Criações sem ONG não pertencem a um recurso de ONG.
+    if (!resourceNgoId && config.resourceIdBody) {
+      return true;
+    }
+
     // Se o usuário não tem ngoId, não pode acessar recursos de ONG
     if (!user.ngoId) {
       throw new ForbiddenException('Usuário não pertence a nenhuma ONG');
     }
 
     // Verificar ownership baseado na configuração
-    const resourceNgoId = this.extractResourceNgoId(request, config);
-
     if (resourceNgoId && resourceNgoId !== user.ngoId) {
       throw new ForbiddenException(
         'Você não tem permissão para acessar recursos de outra ONG',

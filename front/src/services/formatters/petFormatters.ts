@@ -92,6 +92,8 @@ interface NgoOption {
 }
 
 const resolveNgoId = (ngoStrId: string, ngoOptions: NgoOption[]) => {
+  if (!ngoStrId.trim()) return undefined;
+
   const selectedNgo = ngoOptions.find(n => `${n.name} - ${n.email}` === ngoStrId);
   if (!selectedNgo) throw new Error("ONG inválida selecionada");
   return selectedNgo.id;
@@ -115,7 +117,8 @@ export const buildAnimalFormData = (
   formData.append("observations", ""); 
 
   // NGO
-  formData.append("ngoId", resolveNgoId(data.ngoStrId, ngoOptions));
+  const ngoId = resolveNgoId(data.ngoStrId, ngoOptions);
+  if (ngoId) formData.append("ngoId", ngoId);
 
   // Mapeamentos de Índices
   formData.append("sex", mapSexToBackend(data.animalSexIndex));

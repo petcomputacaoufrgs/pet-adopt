@@ -53,7 +53,8 @@ export class CreatePetDto {
   @MaxLength(500)
   characteristics: string;
 
-  @IsNotEmpty()
+  @IsOptional()
+  @IsString()
   @MaxLength(255)
   ngoId: string;
 

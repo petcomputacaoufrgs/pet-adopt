@@ -33,9 +33,7 @@ export class Pet {
   })
   characteristics: string;
 
-  @Prop({
-    required: true,
-  })
+  @Prop()
   ngoId: string;
 
   @Prop({
