@@ -24,6 +24,7 @@ const About = () => {
           <div style={{display: "flex", flexDirection: "column", gap: "16px"}}>
             <p>Temos como meta possibilitar o máximo de adoções responsáveis, visando impactar positivamente a vida dos animais errantes, proporcionando-lhes dignidade, e também ajudando a aliviar a superlotação de canis e ONGs.</p>
             <p>Somos <span style={{fontWeight: 800}}>contra qualquer tipo de maus-tratos e priorizamos sempre o bem-estar animal.</span> Lutamos para combater negligências veterinárias e buscamos proporcionar dignidade aos animais sempre que possível. Nosso objetivo é facilitar o processo de adoção e dar visibilidade a essa causa tão importante.</p>
+            <p><span style={{fontWeight: 800}}>Quer adotar?</span> Entre em contato diretamente com a ONG responsável pelo animal para iniciar o processo de adoção.</p>
           </div>
 
         </Info>
