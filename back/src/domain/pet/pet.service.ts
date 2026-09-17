@@ -23,11 +23,16 @@ export class PetService {
   ) {}
 
   async getAll(filters: PetQueryDto = new PetQueryDto()) {
-    const { page: _page, limit: _limit, ...searchFilters } = filters;
+    const { page: _page, limit: _limit, ...searchFilters } = filters as any;
     // Remove filtros vazios
     Object.keys(searchFilters).forEach((key) => {
       if (!searchFilters[key]) delete searchFilters[key];
     });
+
+    if (searchFilters.name) {
+      const safeName = searchFilters.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      searchFilters.name = { $regex: safeName, $options: 'i' };
+    }
 
     // Ajuste para species (exemplo: capitalize)
     if (filters.species) {
@@ -59,8 +64,8 @@ export class PetService {
         // Escapa a string para evitar que o usuário digite símbolos que quebrem o banco
         const safeVal = filters[field].replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
-        // ^ = início, $ = fim, i = case-insensitive
-        filters[field] = { $regex: `^${safeVal}$`, $options: 'i' };
+        // Busca parcial e case-insensitive
+        filters[field] = { $regex: safeVal, $options: 'i' };
       }
     });
 

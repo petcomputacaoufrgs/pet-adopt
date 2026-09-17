@@ -19,7 +19,7 @@ export class NgoService {
   ) {}
 
   async getAll(filters: NgoQueryDto = new NgoQueryDto()) {
-    const { page: _page, limit: _limit, ...searchFilters } = filters;
+    const { page: _page, limit: _limit, ...searchFilters } = filters as any;
     // Remove empty filters
     Object.keys(searchFilters).forEach((key) => {
       if (!searchFilters[key]) delete searchFilters[key];
@@ -28,6 +28,11 @@ export class NgoService {
           .replace(/^"+|"+$/g, '')
           .replace(/^'+|'+$/g, '');
     });
+
+    if (searchFilters.name) {
+      const safeName = searchFilters.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      searchFilters.name = { $regex: safeName, $options: 'i' };
+    }
 
     const ngos = await this.ngoModel.find(searchFilters);
 
@@ -35,7 +40,7 @@ export class NgoService {
   }
 
   async getApproved(filters: NgoQueryDto = new NgoQueryDto()) {
-    const { page: _page, limit: _limit, ...searchFilters } = filters;
+    const { page: _page, limit: _limit, ...searchFilters } = filters as any;
     // Remove empty filters
     Object.keys(searchFilters).forEach((key) => {
       if (!searchFilters[key]) delete searchFilters[key];
@@ -44,6 +49,11 @@ export class NgoService {
           .replace(/^"+|"+$/g, '')
           .replace(/^'+|'+$/g, '');
     });
+
+    if (searchFilters.name) {
+      const safeName = searchFilters.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      searchFilters.name = { $regex: safeName, $options: 'i' };
+    }
 
     // Busca NGOs cujos usuários administradores têm role NGO_ADMIN (aprovados)
     const approvedUsers = await this.userService.getByRole(Role.NGO_ADMIN);
@@ -76,7 +86,7 @@ export class NgoService {
     );
 
     // Removemos page/limit para não atrapalhar a limpeza de strings abaixo
-    const restFilters = { ...filters };
+    const restFilters: Record<string, any> = { ...filters };
     delete restFilters.page;
     delete restFilters.limit;
 
@@ -89,6 +99,11 @@ export class NgoService {
           .replace(/^'+|'+$/g, '');
       }
     });
+
+    if (restFilters.name) {
+      const safeName = restFilters.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      restFilters.name = { $regex: safeName, $options: 'i' };
+    }
 
     // 2. Busca IDs (Lógica existente)
     const approvedUsers = await this.userService.getByRole(
