@@ -11,8 +11,7 @@ const api = axios.create({
   },
 });
 
-// Variável para controlar se já estamos fazendo refresh
-let isRefreshing = false;
+// Fila para requisições pendentes após refresh token
 let failedQueue: Array<{
   resolve: (value?: boolean) => void;
   reject: (reason?: unknown) => void;
@@ -41,22 +40,17 @@ api.interceptors.response.use(
     const statusCode = error.response?.status;
     const errorMessage = error.response?.data?.message || 'Erro interno do servidor';
 
-    // Se o erro for 401 e não for uma tentativa de refresh e não foi já tentado refresh
-    if (statusCode === 401 && !originalRequest._retry && !isPublicApiEndpoint(originalRequest.url)) {
-      
-      // Se já estamos fazendo refresh, adicionar à fila
-      if (isRefreshing) {
-        return new Promise((resolve, reject) => {
-          failedQueue.push({ resolve, reject });
-        }).then(() => {
-          return api(originalRequest);
-        }).catch((err) => {
-          return Promise.reject(err);
-        });
+    // Tratamento unificado de erro 401 (Unauthorized)
+    if (statusCode === 401) {
+      const isPublic = isPublicApiEndpoint(originalRequest.url);
+
+      // Se já tentou refresh ou é rota pública - apenas rejeitar
+      if (originalRequest._retry || isPublic) {
+        return Promise.reject(error);
       }
 
+      // É rota privada e não tentou refresh ainda
       originalRequest._retry = true;
-      isRefreshing = true;
 
       try {
         // Tentar fazer refresh do token
@@ -71,11 +65,9 @@ api.interceptors.response.use(
           const retryResponse = await api(originalRequest);
           
           return retryResponse;
-          
-        } else {
-          throw new Error(`Refresh falhou com status ${refreshResponse.status}`);
         }
         
+        throw new Error(`Refresh falhou com status ${refreshResponse.status}`);
       } catch (refreshError: unknown) {
         // Processar fila com erro
         processQueue(refreshError, false);
@@ -90,28 +82,9 @@ api.interceptors.response.use(
         }
         
         return Promise.reject(refreshError);
-        
       } finally {
-        isRefreshing = false;
+        // Resetar flag após finalizar refresh (mantido para compatibilidade)
       }
-    }
-
-    // Se é erro 401 e já tentou refresh, ou é erro 401 em rota pública
-    if (statusCode === 401) {
-      // Para rotas públicas, apenas rejeitar sem redirecionar para login
-      if (isPublicApiEndpoint(originalRequest.url)) {
-        return Promise.reject(error);
-      }
-      
-      // Para rotas privadas, limpar sessão e redirecionar
-      localStorage.removeItem('user');
-      
-      if (window.location.pathname !== '/login') {
-        localStorage.setItem('authError', 'Sua sessão expirou. Faça login novamente.');
-        window.location.href = '/login';
-      }
-      
-      return Promise.reject(error);
     }
 
     // Outros tratamentos de erro
