@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../../hooks/useAuth";
-import { useRouteLoaderData, useFetcher } from "react-router-dom"; // <--- Adicionado useFetcher
+import { useRouteLoaderData, useFetcher } from "react-router-dom";
 import { useToast } from "../../contexts/ToastContext";
 
 import Footer from "../HomePage/6Footer";
@@ -12,6 +12,11 @@ import {
     ContentContainer,
     UpdateButton
 } from "./styles"
+
+// ✅ Solução: Definir fora do componente para evitar criação durante render
+const Divider = () => (
+  <div style={{ height: '1px', width: '100%', backgroundColor: 'rgba(188, 175, 169, 1)', margin: '1em 0' }} />
+);
 
 const ManageInfo: React.FC = () => {
   const { user } = useRouteLoaderData("root") as { user: any };
@@ -59,7 +64,7 @@ const ManageInfo: React.FC = () => {
     }, 0);
 
     return () => window.clearTimeout(id);
-  }, [fetcher.state, fetcher.data]);
+  }, [fetcher.state, fetcher.data, showToast]);
 
 
   const handleUpdate = (e: React.FormEvent) => {
@@ -109,11 +114,6 @@ const ManageInfo: React.FC = () => {
     logout(false);
     window.location.href = '/forgotPassword'; // Ou navigate('/forgotPassword')
   };
-
-  function Divider() {
-    return <div style={{ height: '1px', width: '100%', backgroundColor: 'rgba(188, 175, 169, 1)', margin: '1em 0' }} />;
-  }
-
 
   useEffect(() => {
     const id = window.setTimeout(() => {

@@ -140,9 +140,8 @@ export const InfoCard = styled.div`
 
     border-radius: 20px;
     border: 0.1px solid #DEDEDE;
-`
-export const Title = styled.div
-`
+`;
+export const Title = styled.div`
     display: flex;
     flex-direction: column;
     gap: 16px;
