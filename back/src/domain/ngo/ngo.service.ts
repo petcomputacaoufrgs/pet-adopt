@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Ngo } from './schemas/ngo.schema';
@@ -30,7 +31,10 @@ export class NgoService {
     });
 
     if (searchFilters.name) {
-      const safeName = searchFilters.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const safeName = searchFilters.name.replace(
+        /[.*+?^${}()|[\]\\]/g,
+        '\\$&',
+      );
       searchFilters.name = { $regex: safeName, $options: 'i' };
     }
 
@@ -40,7 +44,7 @@ export class NgoService {
   }
 
   async getApproved(filters: NgoQueryDto = new NgoQueryDto()) {
-    const { page: _page, limit: _limit, ...searchFilters } = filters as any;
+    const { page, limit, ...searchFilters } = filters as any;
     // Remove empty filters
     Object.keys(searchFilters).forEach((key) => {
       if (!searchFilters[key]) delete searchFilters[key];
@@ -51,7 +55,10 @@ export class NgoService {
     });
 
     if (searchFilters.name) {
-      const safeName = searchFilters.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const safeName = searchFilters.name.replace(
+        /[.*+?^${}()|[\]\\]/g,
+        '\\$&',
+      );
       searchFilters.name = { $regex: safeName, $options: 'i' };
     }
 

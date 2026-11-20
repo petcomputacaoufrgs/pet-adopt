@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Injectable,
   NotFoundException,
@@ -30,7 +31,10 @@ export class PetService {
     });
 
     if (searchFilters.name) {
-      const safeName = searchFilters.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const safeName = searchFilters.name.replace(
+        /[.*+?^${}()|[\]\\]/g,
+        '\\$&',
+      );
       searchFilters.name = { $regex: safeName, $options: 'i' };
     }
 
@@ -39,7 +43,8 @@ export class PetService {
       searchFilters.species = searchFilters.species;
     }
 
-    if (searchFilters.size) searchFilters.size = searchFilters.size.toUpperCase();
+    if (searchFilters.size)
+      searchFilters.size = searchFilters.size.toUpperCase();
 
     const queryFilters =
       filters.species === Species.OTHER
@@ -51,7 +56,6 @@ export class PetService {
   }
 
   async getPage(filters: PetFilters = {}, page = 1, limit = 12) {
-
     // Remove filtros vazios
     Object.keys(filters).forEach((key) => {
       if (!filters[key]) delete filters[key];

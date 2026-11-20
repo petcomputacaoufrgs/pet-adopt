@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Injectable, Inject, forwardRef } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './schemas/user.schema';
@@ -35,7 +36,11 @@ export class UserService {
     return users;
   }
 
-  async getPage(ngoId: string, filters: UserQueryDto = new UserQueryDto(), approved = true) {
+  async getPage(
+    ngoId: string,
+    filters: UserQueryDto = new UserQueryDto(),
+    approved = true,
+  ) {
     // 1. Extrair paginação e separar dos filtros de busca
     const page = Math.max(1, Number(filters.page) || 1);
     const limit = Math.min(

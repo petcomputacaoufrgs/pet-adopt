@@ -40,7 +40,10 @@ export class UserController {
   @UseGuards(JwtAuthGuard, RolesGuard, NgoOwnershipGuard)
   @Roles(Role.ADMIN, Role.NGO_ADMIN)
   @NgoOwnership({ resourceIdParam: 'ngoId', paramIsNgoId: true })
-  getUnapprovedMembers(@Param('ngoId') ngoId: string, @Query() query: UserQueryDto) {
+  getUnapprovedMembers(
+    @Param('ngoId') ngoId: string,
+    @Query() query: UserQueryDto,
+  ) {
     return this.userService.getUnapprovedMembers(ngoId, query);
   }
 
@@ -48,7 +51,10 @@ export class UserController {
   @UseGuards(JwtAuthGuard, RolesGuard, NgoOwnershipGuard)
   @Roles(Role.ADMIN, Role.NGO_ADMIN)
   @NgoOwnership({ resourceIdParam: 'ngoId', paramIsNgoId: true })
-  getApprovedMembers(@Param('ngoId') ngoId: string, @Query() query: UserQueryDto) {
+  getApprovedMembers(
+    @Param('ngoId') ngoId: string,
+    @Query() query: UserQueryDto,
+  ) {
     return this.userService.getApprovedMembers(ngoId, query);
   }
 
@@ -56,7 +62,10 @@ export class UserController {
   @UseGuards(JwtAuthGuard, RolesGuard, NgoOwnershipGuard)
   @Roles(Role.ADMIN, Role.NGO_ADMIN)
   @NgoOwnership({ resourceIdParam: 'ngoId', paramIsNgoId: true })
-  getApprovedMembersPage(@Param('ngoId') ngoId: string, @Query() query: UserQueryDto) {
+  getApprovedMembersPage(
+    @Param('ngoId') ngoId: string,
+    @Query() query: UserQueryDto,
+  ) {
     return this.userService.getPage(ngoId, query, true);
   }
 
@@ -64,7 +73,10 @@ export class UserController {
   @UseGuards(JwtAuthGuard, RolesGuard, NgoOwnershipGuard)
   @Roles(Role.ADMIN, Role.NGO_ADMIN)
   @NgoOwnership({ resourceIdParam: 'ngoId', paramIsNgoId: true })
-  getUnapprovedMembersPage(@Param('ngoId') ngoId: string, @Query() query: UserQueryDto) {
+  getUnapprovedMembersPage(
+    @Param('ngoId') ngoId: string,
+    @Query() query: UserQueryDto,
+  ) {
     return this.userService.getPage(ngoId, query, false);
   }
 

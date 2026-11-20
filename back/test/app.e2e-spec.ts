@@ -20,8 +20,6 @@ describe('Pet API (e2e)', () => {
   });
 
   it('/pets/recent (GET)', () => {
-    return request(app.getHttpServer())
-      .get('/pets/recent')
-      .expect(200)
+    return request(app.getHttpServer()).get('/pets/recent').expect(200);
   });
 });
