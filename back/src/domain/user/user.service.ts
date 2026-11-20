@@ -142,10 +142,6 @@ export class UserService {
   async delete(id: string, userNgoId?: string) {
     const user = await this.userModel.findById(id);
 
-    if (!user) {
-      throw new NotFoundException('Usuário não encontrado');
-    }
-
     // Verificar ownership se userNgoId foi fornecido (via guard)
     if (userNgoId && user.ngoId !== userNgoId) {
       throw new ForbiddenException(

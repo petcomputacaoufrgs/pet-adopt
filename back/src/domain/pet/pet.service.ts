@@ -220,9 +220,6 @@ export class PetService {
 
   async delete(id: string, userNgoId?: string) {
     const pet = await this.petModel.findById(id);
-    if (!pet) {
-      return null;
-    }
 
     // Verificar ownership se userNgoId foi fornecido (via guard)
     if (userNgoId && pet.ngoId !== userNgoId) {
