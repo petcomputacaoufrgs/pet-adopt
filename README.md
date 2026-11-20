@@ -1,318 +1,228 @@
-# PetAdopt - Plataforma de Adoção
+# 🐾 PetAdopt - Plataforma de Adoção de Animais
 
-O **PetAdopt** é uma plataforma para adoção de animais composta por um frontend em **React + Vite** e um backend em **NestJS**, ambos escritos em **TypeScript** e executados utilizando **Docker**.
+Olá! Bem-vindo ao **PetAdopt**! 😊
 
-Este repositório contém toda a aplicação, incluindo o frontend, backend e a infraestrutura necessária para desenvolvimento e produção.
+Esta é uma aplicação que ajuda pessoas a encontrarem e adotarem animais de estimação. O sistema funciona como um "site" onde você pode ver informações sobre os animais disponíveis para adoção.
 
 ---
 
-# Tecnologias
+# 🌟 O Que É Este Projeto?
 
-## Frontend
+Imagine que temos um "sistema" que tem duas partes principais trabalhando juntas:
 
-* React
-* TypeScript
-* Vite
-* React Router
-* Styled Components
-* Axios
+1. **Parte Visual (Frontend)** - É o que você vê no navegador, como botões, fotos dos animais, formulários
+2. **Parte Lógica (Backend)** - É o "cérebro" por trás do site que guarda as informações, autentica usuários e gerencia os dados
 
-## Backend
+Ambas as partes foram criadas para trabalhar juntas perfeitamente! 💪
 
-* NestJS
-* TypeScript
-* JWT
-* MongoDB
+---
+
+# 🛠️ Tecnologias Usadas
+
+## Na Parte Visual (Frontend)
+- **React** - Uma ferramenta popular para criar interfaces modernas
+- **TypeScript** - Uma versão melhorada de JavaScript que ajuda a evitar erros
+- **Vite** - Um acelerador para carregar o site rapidamente
+
+## Na Parte Lógica (Backend)
+- **NestJS** - Um organizador inteligente dos dados e regras do sistema
+- **MongoDB** - Onde os dados são guardados (como uma biblioteca gigante de informações)
+- **JWT** - Um sistema de segurança para proteger contas de usuários
 
 ## Infraestrutura
-
-* Docker
-* Docker Compose
-* Nginx (Produção)
-* Cloudflare Tunnel (Produção)
+- **Docker** - Uma ferramenta mágica que empacota tudo para funcionar em qualquer computador! 🎁
 
 ---
 
-# Estrutura do Projeto
+# 🗂️ Como Está Organizado?
 
-```text
+```
 pet-adopt/
-
-├── back/                     # Backend (NestJS)
-│   ├── src/
-│   ├── uploads/
-│   └── .env
 │
-├── front/                    # Frontend (React + Vite)
-│   └── src/
+├── back/                    ← A parte lógica do sistema (backend)
+│   └── Aqui ficam os "cérebros" e regras
 │
-├── nginx/
+├── front/                   ← A parte visual (frontend)
+│   └── O que você vê no navegador
 │
-├── docker-compose.yml         # Produção
-├── docker-compose-local.yml   # Desenvolvimento
-└── README.md
+├── nginx/                   ← Um tradutor entre o site e os usuários
+│
+└── Arquivos especiais de configuração
 ```
 
 ---
 
-# Pré-requisitos
+# 📋 O Que Você Precisa Ter Antes
 
-Antes de iniciar, instale:
+Para usar este projeto, basta ter instalado no seu computador:
 
-* Git
-* Docker Desktop (já inclui Docker Compose)
+1. ✅ **Docker Desktop** - É um programa gratuito que vem com todas as ferramentas necessárias! Ele instala o Git automaticamente também.
+
+📥 [Baixe aqui](https://www.docker.com/products/docker-desktop)
 
 ---
 
-# Configuração
+# 🚀 Como Começar (Passo a Passo Fácil)
 
-## 1. Clonar o repositório
+## 1️⃣ Baixar o Projeto
 
 ```bash
 git clone <URL_DO_REPOSITORIO>
 cd pet-adopt
 ```
 
----
-
-## 2. Configurar o Backend
-
-Crie o arquivo:
-
-```text
-back/.env
-```
-
-Utilize as variáveis de ambiente fornecidas pela equipe do projeto.
-
-**Importante**
-
-O arquivo `.env` não faz parte do repositório por conter informações sensíveis como:
-
-* Senhas
-* Tokens JWT
-* Configuração do MongoDB
-* Configuração de e-mail
+Isso é como baixar uma pasta completa com todas as informações do projeto!
 
 ---
 
-# Executando o Projeto
+## 2️⃣ Preparar as Configurações
 
-O projeto possui dois ambientes diferentes.
+Dentro da pasta `back/`, crie um arquivo chamado `.env`. Pense nisso como um "caderno de anotações" com senhas e configurações especiais.
 
-## Desenvolvimento
+⚠️ **Atenção**: Este arquivo é secreto! Por isso, ele não está no repositório. Você deve criá-lo manualmente com as informações fornecidas pela equipe.
 
-Durante o desenvolvimento utilize:
+**O que NÃO compartilhar este arquivo:**
+- Senhas
+- Tokens de segurança
+- Configurações sensíveis
+
+É como se fosse o "diário dos segredos" do sistema - ninguém mais deve ver! 🔐
+
+---
+
+# 💻 Como Rodar o Projeto (Para Desenvolvimento)
+
+Use este comando para começar a usar o PetAdopt no seu computador:
 
 ```bash
 docker compose -f docker-compose-local.yml up -d --build
 ```
 
-Esse ambiente:
+O que acontece agora? 🤔
 
-* expõe o backend na porta **3002**
-* expõe o frontend na porta **5173**
-* não utiliza Nginx
-* não utiliza Cloudflare Tunnel
+✅ O **PetAdopt** será iniciado automaticamente  
+✅ Você conseguirá ver o site na porta **5173** (http://localhost:5173)  
+✅ Os "servidores" ficam rodando na porta **3002**  
 
-### Acessos
+### Onde Acessar?
 
-Frontend
+- 🎨 **Site do PetAdopt**: http://localhost:5173
+- 🔐 **Área de Login/API**: http://localhost:3002/api
+- 📖 **Documentação Técnica**: http://localhost:3002/api (Swagger)
 
-```
-http://localhost:5173
-```
-
-Backend
-
-```
-http://localhost:3002
-```
-
-Swagger
-
-```
-http://localhost:3002/api
-```
+> 💡 **Dica**: O "Swagger" é como uma página que mostra todas as regras da API, útil para desenvolvedores.
 
 ---
 
-## Produção
+# ⏹️ Para Parar Quando Acabou
 
-Para executar a infraestrutura utilizada no servidor:
-
-```bash
-docker compose -f docker-compose.yml up -d --build
-```
-
-Esse ambiente utiliza:
-
-* Nginx
-* Cloudflare Tunnel
-* Rede interna Docker
-
-As portas não são expostas diretamente para a máquina local.
-
----
-
-# Parando os Containers
-
-Desenvolvimento
+Quando quiser parar o PetAdopt:
 
 ```bash
 docker compose -f docker-compose-local.yml down
 ```
 
-Produção
-
-```bash
-docker compose -f docker-compose.yml down
-```
-
-Todos os containers
-
-```bash
-docker compose down
-```
+É como desligar o computador - tudo para de rodar e libera os recursos!
 
 ---
 
-# Fluxo de Desenvolvimento
+# 🔄 Comandos Úteis
 
-Após iniciar os containers:
-
-1. Abra o projeto no VS Code.
-2. Faça suas alterações no frontend ou backend.
-3. Teste a funcionalidade.
-4. Realize o commit.
-5. Envie as alterações para sua branch.
+| O Que Você Quer Fazer | Comando |
+|-----------------------|---------|
+| Iniciar novamente o projeto | `docker compose -f docker-compose-local.yml up -d --build` |
+| Ver se está tudo rodando | `docker ps` |
+| Ler o que está acontecendo (logs) | `docker compose logs` |
+| Ver só o que o backend está fazendo | `docker logs petadopt_api` |
+| Ver só o que o frontend está fazendo | `docker logs petadopt_front` |
 
 ---
 
-# Desenvolvimento Frontend
+# 🛠️ Dicas para Desenvolvedores
 
-O frontend está localizado em:
+## Quer encontrar algo no código?
 
-```text
-front/
-```
-
-Tecnologias utilizadas:
-
-* React
-* Vite
-* TypeScript
-
-Para localizar um componente ou texto da interface, utilize a pesquisa global do VS Code:
+Use a pesquisa global do seu editor de código (VS Code):
 
 ```
 Ctrl + Shift + F
 ```
 
----
+Isso vai procurar por qualquer coisa em todo o projeto! ✨
 
-# Desenvolvimento Backend
+## Documentação da API
 
-O backend está localizado em:
+O backend tem uma documentação completa que mostra:
+- Quais endpoints existem
+- Como usar cada funcionalidade
+- Que tipos de dados são esperados
 
-```text
-back/
-```
-
-É desenvolvido utilizando NestJS.
-
-A documentação da API pode ser acessada em:
-
-```
-http://localhost:3002/api
-```
+Acesse: http://localhost:3002/api
 
 ---
 
-# Comandos Úteis
+# ❓ Solução de Problemas Comuns
 
-Reconstruir os containers
+### "O site não aparece quando eu abro..." 🖥️
 
-```bash
-docker compose -f docker-compose-local.yml up -d --build
-```
-
-Visualizar os containers
-
+**Verifique se o PetAdopt está rodando:**
 ```bash
 docker ps
 ```
 
-Visualizar os logs
-
-```bash
-docker compose logs
-```
-
-Logs do backend
-
-```bash
-docker logs petadopt_api
-```
-
-Logs do frontend
-
-```bash
-docker logs petadopt_front
-```
+Você deve ver algo com "5173" na coluna PORT. Se não estiver, reinicie!
 
 ---
 
-# Solução de Problemas
+### "O sistema de login/API não responde..." 🔐
 
-## O frontend não abre
-
-Verifique se os containers estão em execução:
-
-```bash
-docker ps
-```
-
-O frontend deve estar publicado na porta:
-
-```
-5173
-```
-
----
-
-## O backend não responde
-
-Confira os logs:
-
+**Veja o que está acontecendo:**
 ```bash
 docker logs petadopt_api
 ```
 
+Procure mensagens de erro ou avisos no terminal.
+
 ---
 
-## Erro informando que o arquivo `.env` não foi encontrado
+### "Erro: Arquivo .env não encontrado" 📁
 
-Verifique se o arquivo existe em:
+**Verifique se existe:**
+- Entre na pasta `back/`
+- Crie um arquivo chamado `.env` (com esse ponto antes!)
+- Preencha com as configurações fornecidas
 
-```text
-back/.env
+---
+
+### "As portas estão em uso por outro programa..." ⚠️
+
+Alguma outra coisa pode estar usando as portas 5173 ou 3002. Para verificar:
+
+```bash
+# No Windows
+netstat -ano | findstr :5173
+
+# Ou feche outros programas que usem o navegador
 ```
 
 ---
 
-## Porta em uso
+# ⚠️ Regras Importantes (Não Ignore!)
 
-Certifique-se de que as portas abaixo não estejam sendo utilizadas por outro programa:
-
-* 5173 (Frontend)
-* 3002 (Backend)
+1. ✅ Use **docker-compose-local.yml** para testes no seu computador
+2. ✅ Use **docker-compose.yml** apenas para produção real
+3. ❌ **Nunca** envie o arquivo `.env` para o repositório!
+4. ❌ **Nunca** compartilhe senhas, chaves ou informações secretas!
+5. ✅ Faça backup das configurações sensíveis em local seguro
 
 ---
 
-# Observações
+# 🎉 Pronto para Começar?
 
-* Utilize `docker-compose-local.yml` para desenvolvimento.
-* Utilize `docker-compose.yml` apenas para a infraestrutura de produção.
-* Nunca envie o arquivo `.env` para o repositório.
-* Nunca publique senhas, tokens ou credenciais no Git.
+Basta executar os comandos e acessar http://localhost:5173 no seu navegador!
+
+Se tiver dúvidas, consulte a documentação técnica ou pergunte à equipe do projeto! 😊
+
+---
+
+*Desenvolvido com ❤️ para ajudar na adoção responsável de animais!* 🐶🐱🐰
