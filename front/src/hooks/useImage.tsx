@@ -11,14 +11,12 @@ export const useImage = ({ imagePath, fallbackImage }: UseImageProps) => {
   const [error, setError] = useState<boolean>(false);
 
   useEffect(() => {
-    if (!imagePath) {
-      setImageUrl(fallbackImage || '');
-      return;
-    }
+    // Não faz nada se não houver caminho de imagem
+    if (!imagePath) return;
 
     const fullUrl = imageHelper.getFullImageUrl(imagePath);
     
-    // Verificar se a imagem existe
+    // Verificar se a imagem existe de forma assíncrona
     const img = new Image();
     img.onload = () => {
       setImageUrl(fullUrl);
